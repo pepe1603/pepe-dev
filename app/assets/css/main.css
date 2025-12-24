@@ -1,0 +1,8 @@
+/* app/assets/css/main.css */
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-family-sans: "Geist", sans-serif;
+  --font-family-mono: "Fira Code", monospace;
+}
