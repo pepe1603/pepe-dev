@@ -14,8 +14,11 @@
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.3.0",
+    "@nuxtjs/supabase": "^2.0.3",
+    "@supabase/supabase-js": "^2.89.0",
     "eslint": "^9.39.2",
     "nuxt": "^4.2.2",
+    "supabase": "^2.65.6",
     "typescript": "^5.9.3",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
