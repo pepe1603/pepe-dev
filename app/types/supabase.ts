@@ -1,191 +1,938 @@
-// types/supabase.ts
-import type { Tables, Enums, Database } from './database.types';
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-// Exportamos el tipo principal de la base de datos para tipar el cliente
-export type DB = Database;
-
-// =============================================
-// 1. TABLAS PRINCIPALES (Row Types)
-// =============================================
-
-// Perfiles
-export type IProfile = Tables<'profiles'>;
-export type IProfileInsert = TablesInsert<'profiles'>;
-export type IProfileUpdate = TablesUpdate<'profiles'>;
-
-// Habilidades
-export type ISkill = Tables<'skills'>;
-export type ISkillInsert = TablesInsert<'skills'>;
-export type ISkillUpdate = TablesUpdate<'skills'>;
-
-// Tecnologías
-export type ITechnology = Tables<'technologies'>;
-export type ITechnologyInsert = TablesInsert<'technologies'>;
-export type ITechnologyUpdate = TablesUpdate<'technologies'>;
-
-// Proyectos
-export type IProject = Tables<'projects'>;
-export type IProjectInsert = TablesInsert<'projects'>;
-export type IProjectUpdate = TablesUpdate<'projects'>;
-
-// Experiencias
-export type IExperience = Tables<'experiences'>;
-export type IExperienceInsert = TablesInsert<'experiences'>;
-export type IExperienceUpdate = TablesUpdate<'experiences'>;
-
-// Media
-export type IMedia = Tables<'media'>;
-export type IMediaInsert = TablesInsert<'media'>;
-export type IMediaUpdate = TablesUpdate<'media'>;
-
-// Relación Proyecto-Tecnología
-export type IProjectTechnology = Tables<'project_technologies'>;
-export type IProjectTechnologyInsert = TablesInsert<'project_technologies'>;
-export type IProjectTechnologyUpdate = TablesUpdate<'project_technologies'>;
-
-// Log de Auditoría
-export type IAuditLog = Tables<'audit_log'>;
-export type IAuditLogInsert = TablesInsert<'audit_log'>;
-export type IAuditLogUpdate = TablesUpdate<'audit_log'>;
-
-// =============================================
-// 2. VISTAS PÚBLICAS
-// =============================================
-
-// Vistas públicas (solo datos publicados)
-export type IProfilePublic = Tables<'profiles_public'>;
-export type IProjectPublic = Tables<'projects_public'>;
-export type IExperiencePublic = Tables<'experiences_public'>;
-export type ISkillPublic = Tables<'skills_public'>;
-
-// =============================================
-// 3. ENUMS
-// =============================================
-
-export type RecordStatus = Enums<'record_status'>;
-export type SkillLevel = Enums<'skill_level'>;
-export type ExperienceType = Enums<'experience_type'>;
-
-// Constantes de Enums (para uso en UI/validaciones)
-export const RecordStatusValues = ['draft', 'published', 'archived', 'trashed'] as const;
-export const SkillLevelValues = ['basic', 'intermediate', 'advanced', 'expert'] as const;
-export const ExperienceTypeValues = ['work', 'education', 'certification', 'volunteer', 'talk', 'publication'] as const;
-
-// =============================================
-// 4. TIPOS COMPUESTOS/HELPERS
-// =============================================
-
-// Para relaciones extendidas (con joins)
-export type IProjectWithRelations = IProject & {
-  project_technologies?: Array<IProjectTechnology & { technology?: ITechnology }>;
-  media?: IMedia[];
-};
-
-export type IExperienceWithRelations = IExperience & {
-  related_project?: IProject;
-};
-
-// Para formularios/creación
-export interface ProjectFormData {
-  title: string;
-  subtitle?: string;
-  slug: string;
-  short_description: string;
-  description: string;
-  tags: string[];
-  technologies: string[]; // IDs de tecnologías
-  demo_url?: string;
-  repo_url?: string;
-  is_featured: boolean;
-  status: RecordStatus;
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.1"
+  }
+  public: {
+    Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          id: string
+          ip_hash: string | null
+          new_values: Json | null
+          old_values: Json | null
+          performed_at: string
+          performed_by: string
+          record_id: string
+          table_name: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          id?: string
+          ip_hash?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          performed_at?: string
+          performed_by?: string
+          record_id: string
+          table_name: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          id?: string
+          ip_hash?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          performed_at?: string
+          performed_by?: string
+          record_id?: string
+          table_name?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      experiences: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string
+          end_date: string | null
+          id: string
+          location: string | null
+          published_at: string | null
+          published_by: string | null
+          related_project_id: string | null
+          restored_at: string | null
+          restored_by: string | null
+          sort_order: number
+          start_date: string
+          status: Database["public"]["Enums"]["record_status"]
+          subtitle: string | null
+          title: string
+          trashed_at: string | null
+          trashed_by: string | null
+          type: Database["public"]["Enums"]["experience_type"]
+          updated_at: string | null
+          updated_by: string | null
+          url: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description: string
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          related_project_id?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          sort_order?: number
+          start_date: string
+          status?: Database["public"]["Enums"]["record_status"]
+          subtitle?: string | null
+          title: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+          type?: Database["public"]["Enums"]["experience_type"]
+          updated_at?: string | null
+          updated_by?: string | null
+          url?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string
+          end_date?: string | null
+          id?: string
+          location?: string | null
+          published_at?: string | null
+          published_by?: string | null
+          related_project_id?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          sort_order?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["record_status"]
+          subtitle?: string | null
+          title?: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+          type?: Database["public"]["Enums"]["experience_type"]
+          updated_at?: string | null
+          updated_by?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "experiences_related_project_id_fkey"
+            columns: ["related_project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "experiences_related_project_id_fkey"
+            columns: ["related_project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media: {
+        Row: {
+          alt: string | null
+          caption: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          id: string
+          name: string
+          project_id: string
+          published_at: string | null
+          published_by: string | null
+          restored_at: string | null
+          restored_by: string | null
+          sort_order: number
+          status: Database["public"]["Enums"]["record_status"]
+          trashed_at: string | null
+          trashed_by: string | null
+          type: string
+          updated_at: string | null
+          updated_by: string | null
+          url: string
+        }
+        Insert: {
+          alt?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          name: string
+          project_id: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          type: string
+          updated_at?: string | null
+          updated_by?: string | null
+          url: string
+        }
+        Update: {
+          alt?: string | null
+          caption?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          sort_order?: number
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          type?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          created_by: string
+          cv_url: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          email_public: string | null
+          full_name: string
+          github_url: string | null
+          headline: string | null
+          id: string
+          linkedin_url: string | null
+          location: string | null
+          metadata: Json
+          published_at: string | null
+          published_by: string | null
+          restored_at: string | null
+          restored_by: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          trashed_at: string | null
+          trashed_by: string | null
+          twitter_url: string | null
+          updated_at: string | null
+          updated_by: string | null
+          views_count: number
+          website_url: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          created_by?: string
+          cv_url?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          email_public?: string | null
+          full_name: string
+          github_url?: string | null
+          headline?: string | null
+          id: string
+          linkedin_url?: string | null
+          location?: string | null
+          metadata?: Json
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          twitter_url?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          views_count?: number
+          website_url?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          created_by?: string
+          cv_url?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          email_public?: string | null
+          full_name?: string
+          github_url?: string | null
+          headline?: string | null
+          id?: string
+          linkedin_url?: string | null
+          location?: string | null
+          metadata?: Json
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          twitter_url?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          views_count?: number
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      project_technologies: {
+        Row: {
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          project_id: string
+          sort_order: number
+          technology_id: string
+          trashed_at: string | null
+          trashed_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          project_id: string
+          sort_order?: number
+          technology_id: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          project_id?: string
+          sort_order?: number
+          technology_id?: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_technologies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_technologies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_technologies_technology_id_fkey"
+            columns: ["technology_id"]
+            isOneToOne: false
+            referencedRelation: "technologies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          content: Json
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          demo_url: string | null
+          description: string
+          id: string
+          is_featured: boolean
+          published_at: string | null
+          published_by: string | null
+          repo_url: string | null
+          restored_at: string | null
+          restored_by: string | null
+          short_description: string
+          slug: string
+          status: Database["public"]["Enums"]["record_status"]
+          subtitle: string | null
+          tags: string[]
+          thumbnail_url: string | null
+          title: string
+          trashed_at: string | null
+          trashed_by: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          demo_url?: string | null
+          description: string
+          id?: string
+          is_featured?: boolean
+          published_at?: string | null
+          published_by?: string | null
+          repo_url?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          short_description: string
+          slug: string
+          status?: Database["public"]["Enums"]["record_status"]
+          subtitle?: string | null
+          tags?: string[]
+          thumbnail_url?: string | null
+          title: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          content?: Json
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          demo_url?: string | null
+          description?: string
+          id?: string
+          is_featured?: boolean
+          published_at?: string | null
+          published_by?: string | null
+          repo_url?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          short_description?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["record_status"]
+          subtitle?: string | null
+          tags?: string[]
+          thumbnail_url?: string | null
+          title?: string
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      skills: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          category: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string | null
+          display_order: number
+          id: string
+          level: Database["public"]["Enums"]["skill_level"]
+          name: string
+          published_at: string | null
+          published_by: string | null
+          restored_at: string | null
+          restored_by: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          trashed_at: string | null
+          trashed_by: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          level?: Database["public"]["Enums"]["skill_level"]
+          name: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          level?: Database["public"]["Enums"]["skill_level"]
+          name?: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      technologies: {
+        Row: {
+          archived_at: string | null
+          archived_by: string | null
+          color: string | null
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          deleted_by: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          published_at: string | null
+          published_by: string | null
+          restored_at: string | null
+          restored_by: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          trashed_at: string | null
+          trashed_by: string | null
+          updated_at: string | null
+          updated_by: string | null
+          website_url: string | null
+        }
+        Insert: {
+          archived_at?: string | null
+          archived_by?: string | null
+          color?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          archived_at?: string | null
+          archived_by?: string | null
+          color?: string | null
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          published_at?: string | null
+          published_by?: string | null
+          restored_at?: string | null
+          restored_by?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          trashed_at?: string | null
+          trashed_by?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      experiences_public: {
+        Row: {
+          description: string | null
+          end_date: string | null
+          id: string | null
+          location: string | null
+          start_date: string | null
+          subtitle: string | null
+          title: string | null
+          type: Database["public"]["Enums"]["experience_type"] | null
+          url: string | null
+        }
+        Insert: {
+          description?: string | null
+          end_date?: string | null
+          id?: string | null
+          location?: string | null
+          start_date?: string | null
+          subtitle?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["experience_type"] | null
+          url?: string | null
+        }
+        Update: {
+          description?: string | null
+          end_date?: string | null
+          id?: string | null
+          location?: string | null
+          start_date?: string | null
+          subtitle?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["experience_type"] | null
+          url?: string | null
+        }
+        Relationships: []
+      }
+      profiles_public: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          email_public: string | null
+          full_name: string | null
+          github_url: string | null
+          headline: string | null
+          id: string | null
+          linkedin_url: string | null
+          location: string | null
+          twitter_url: string | null
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          email_public?: string | null
+          full_name?: string | null
+          github_url?: string | null
+          headline?: string | null
+          id?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          twitter_url?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          email_public?: string | null
+          full_name?: string | null
+          github_url?: string | null
+          headline?: string | null
+          id?: string | null
+          linkedin_url?: string | null
+          location?: string | null
+          twitter_url?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      projects_public: {
+        Row: {
+          demo_url: string | null
+          description: string | null
+          id: string | null
+          is_featured: boolean | null
+          published_at: string | null
+          repo_url: string | null
+          short_description: string | null
+          slug: string | null
+          subtitle: string | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string | null
+        }
+        Insert: {
+          demo_url?: string | null
+          description?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          published_at?: string | null
+          repo_url?: string | null
+          short_description?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string | null
+        }
+        Update: {
+          demo_url?: string | null
+          description?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          published_at?: string | null
+          repo_url?: string | null
+          short_description?: string | null
+          slug?: string | null
+          subtitle?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      skills_public: {
+        Row: {
+          category: string | null
+          description: string | null
+          display_order: number | null
+          id: string | null
+          level: Database["public"]["Enums"]["skill_level"] | null
+          name: string | null
+        }
+        Insert: {
+          category?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string | null
+          level?: Database["public"]["Enums"]["skill_level"] | null
+          name?: string | null
+        }
+        Update: {
+          category?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string | null
+          level?: Database["public"]["Enums"]["skill_level"] | null
+          name?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Functions: {
+      current_user_id: { Args: never; Returns: string }
+    }
+    Enums: {
+      experience_type:
+        | "work"
+        | "education"
+        | "certification"
+        | "volunteer"
+        | "talk"
+        | "publication"
+      record_status: "draft" | "published" | "archived" | "trashed"
+      skill_level: "basic" | "intermediate" | "advanced" | "expert"
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
 
-export interface ProfileFormData {
-  full_name: string;
-  headline?: string;
-  bio?: string;
-  location?: string;
-  avatar_url?: string;
-  cv_url?: string;
-  github_url?: string;
-  linkedin_url?: string;
-  twitter_url?: string;
-  website_url?: string;
-  email_public?: string;
-  status: RecordStatus;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
-// =============================================
-// 5. RESPONSE TYPES (para API/respuestas)
-// =============================================
-
-export interface ApiResponse<T = any> {
-  data?: T;
-  error?: string;
-  message?: string;
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  perPage: number;
-  totalPages: number;
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
 
-// =============================================
-// 6. FILTER TYPES (para búsquedas/filtros)
-// =============================================
-
-export interface ProjectFilters {
-  status?: RecordStatus;
-  is_featured?: boolean;
-  tags?: string[];
-  technologies?: string[];
-  search?: string;
-  page?: number;
-  perPage?: number;
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
 
-export interface ExperienceFilters {
-  type?: ExperienceType;
-  status?: RecordStatus;
-  search?: string;
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
-// =============================================
-// 7. STORAGE TYPES
-// =============================================
-
-export type StorageBucket = 'avatars' | 'project-thumbnails' | 'project-media';
-
-export interface UploadFileOptions {
-  bucket: StorageBucket;
-  path: string;
-  file: File;
-  metadata?: Record<string, any>;
-}
-
-// =============================================
-// 8. AUTH TYPES (extendiendo Supabase Auth)
-// =============================================
-
-export interface UserMetadata {
-  role?: 'admin' | 'user';
-  avatar_url?: string;
-  full_name?: string;
-}
-
-export type AuthUser = {
-  id: string;
-  email: string;
-  user_metadata: UserMetadata;
-  role?: string;
-};
-
-// =============================================
-// 9. EXPORTACIONES PRINCIPALES
-// =============================================
-
-// Re-exportar tipos útiles de database.types
-export type { Tables, TablesInsert, TablesUpdate, Enums } from './database.types';
+export const Constants = {
+  public: {
+    Enums: {
+      experience_type: [
+        "work",
+        "education",
+        "certification",
+        "volunteer",
+        "talk",
+        "publication",
+      ],
+      record_status: ["draft", "published", "archived", "trashed"],
+      skill_level: ["basic", "intermediate", "advanced", "expert"],
+    },
+  },
+} as const
