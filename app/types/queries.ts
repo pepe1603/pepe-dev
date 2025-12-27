@@ -1,3 +1,4 @@
+// app/types/queries.ts
 import type {
   PublicProfile,
   PublicProject,
@@ -5,6 +6,7 @@ import type {
   PublicSkill,
   Technology,
   Media,
+  SkillLevel,
 } from './domain'
 
 /* =========================
@@ -48,14 +50,13 @@ export type PublicProjectDetail = PublicProjectListItem & {
 }
 
 // Skills
-export type PublicSkillItem = Pick<
-  PublicSkill,
-  | 'id'
-  | 'name'
-  | 'level'
-  | 'category'
-  | 'display_order'
->
+export type PublicSkillItem = {
+  id: string
+  name: string
+  level: SkillLevel
+  category: string | null
+  display_order: number
+}
 
 // Experiences
 export type PublicExperienceItem = Pick<
@@ -69,3 +70,6 @@ export type PublicExperienceItem = Pick<
   | 'location'
   | 'url'
 >
+
+// Re-exportar enums
+export type { SkillLevel } from './domain'

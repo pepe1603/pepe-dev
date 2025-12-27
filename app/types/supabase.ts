@@ -1,3 +1,4 @@
+//app/types/supabase.tss generado por supabse type gen.
 export type Json =
   | string
   | number

@@ -17,7 +17,7 @@ export default defineNuxtConfig({
         url: process.env.NUXT_PUBLIC_SUPABASE_URL,
         key: process.env.NUXT_PUBLIC_SUPABASE_KEY,
         redirectOptions: {
-          login: '/login',
+          login: 'auth-home',
           callback: '/confirm',
           exclude: ['/*', '/contact', '/about', '/projects/*', '/api/*',],
         },
@@ -38,6 +38,17 @@ export default defineNuxtConfig({
   },
   
   css: ['~/assets/css/main.css'],
+
+   app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in'
+    },
+    layoutTransition: {
+      name: 'layout',
+      mode: 'out-in'
+    }
+  },
 
     // Configuración de fuentes
   fonts: {
