@@ -1,2 +1,8 @@
-User-Agent: *
-Disallow:
+
+User-agent: *
+Allow: /
+
+Disallow: /auth
+Disallow: /api
+
+Sitemap: https://pepe.dev/sitemap.xml
