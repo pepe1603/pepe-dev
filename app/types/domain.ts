@@ -4,7 +4,7 @@ import type {
   TablesInsert,
   TablesUpdate,
   Enums
-} from './supabase'
+} from './database.types'
 
 /* =========================
    PROFILES
