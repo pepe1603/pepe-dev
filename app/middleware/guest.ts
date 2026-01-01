@@ -3,6 +3,12 @@ export default defineNuxtRouteMiddleware(() => {
   const user = useSupabaseUser()
 
   if (user.value) {
-    return navigateTo('/')
+    console.log(`[GUEST GUARD] Usuario ya autenticado. Redirigiendo a Dashboard.`);
+    
+            // 3. Redirige a la página principal del dashboard
+            // Usamos el nombre de la ruta para mayor robustez
+            return navigateTo({ name: 'dashboard-home' });
   }
+
+  // Si el usuario no existe, se permite el acceso a la ruta (Login/Register).
 })
