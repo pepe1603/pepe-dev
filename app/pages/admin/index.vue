@@ -59,6 +59,7 @@ definePageMeta({
               variant="soft"
               color="primary"
               icon="i-lucide-user"
+              :to="{name: 'admin-profile-page'}"
             >
               Editar perfil
             </UButton>

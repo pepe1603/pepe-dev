@@ -6,9 +6,9 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const adminNavigation: NavigationMenuItem[] = [
   { label: 'Perfil', icon: 'i-lucide-user', to: '/admin/profile' },
-  { label: 'Proyectos', icon: 'i-lucide-folder-kanban', to: '/admin/projects' },
-  { label: 'Experiencia', icon: 'i-lucide-briefcase', to: '/admin/experiences' },
-  { label: 'Skills', icon: 'i-lucide-star', to: '/admin/skills' }
+  // { label: 'Proyectos', icon: 'i-lucide-folder-kanban', to: '/admin/projects' },
+  // { label: 'Experiencia', icon: 'i-lucide-briefcase', to: '/admin/experiences' },
+  // { label: 'Skills', icon: 'i-lucide-star', to: '/admin/skills' }
 ]
 
 const route = useRoute()
@@ -73,7 +73,7 @@ const pageDescription = computed(
             <UColorModeButton />
             <UAvatar
               size="sm"
-              src="/avatar-placeholder.png"
+              src="https://www.flaticon.com/free-icon/person_10412383?term=profile+placeholder&page=1&position=1&origin=search&related_id=10412383"
               alt="Admin"
             />
             

@@ -1,3 +1,4 @@
+//app/composables/useSupabase.ts
 import type { Database } from '~/types'
 
 export const useSupabase = () => {

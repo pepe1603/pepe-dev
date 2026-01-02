@@ -1,20 +1,12 @@
 // app/middleware/admin-auth.ts
-export default defineNuxtRouteMiddleware((to) => {
-  // Solo proteger rutas /admin
-  if (!to.path.startsWith('/admin')) return
+export default defineNuxtRouteMiddleware(() => {
+  const user = useSupabaseUser()
 
-  const { isAuthenticated, user } = useSupabase()
+  // ⚠️ IMPORTANTE: NO bloquear en SSR
+  if (import.meta.server) return
 
-  // SSR: esperar a que Supabase resuelva el estado
-  if (import.meta.server && user.value === undefined) {
-    return
-  }
-
-  // No autenticado → login
-  if (!isAuthenticated.value) {
-    return navigateTo({
-      name: 'auth-login',
-      query: { redirect: to.fullPath }
-    })
+  // Si NO hay sesión → login
+  if (!user.value) {
+    return navigateTo({name: 'auth-login'})
   }
 })
