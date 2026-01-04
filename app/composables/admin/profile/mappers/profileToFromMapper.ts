@@ -1,10 +1,11 @@
 //app/composables/admin/profile/mappers/profileToFormMapper.ts
+import type { Tables } from '~/types/database.types';
 import type { ProfileFormModel } from '../models/ProfileFormModel'
  /** 
   * Mapper: ProfileEntity (DB / API) → ProfileFormModel (UI) 
   * * No muta * No side effects 
   * */
-  export const profileToFormMapper = (profile: any // luego tiparemos con ProfileEntity
+  export const profileToFormMapper = (profile: Tables<'profiles'> // luego tiparemos con ProfileEntity
   ): ProfileFormModel => {
     return {
       fullName: profile.full_name ?? "",

@@ -2,7 +2,8 @@
 import type { ProfileFormModel } from '~/composables/admin/profile/models/ProfileFormModel'
 import { useAdminProfileQuery } from '~/composables/admin/profile/queries/useAdminProfileQuery'
 import { useUpdateProfileUseCase } from '~/composables/admin/profile/usecases/useUpdateProfileUseCase'
-import { useUploadProfileMediaUseCase } from '~/composables/admin/profile/usecases/useUploadProfileMediaUseCase'
+import { useUploadService } from '~/composables/uploads/useUploadService'
+
 
 definePageMeta({
   middleware: 'admin-auth',
@@ -18,6 +19,8 @@ const toast = useToast()
    QUERY (SOURCE OF TRUTH)
 ================================ */
 const { form, loading, refetch: _refetch } = useAdminProfileQuery()
+
+
 
 /* ===============================
    LOCAL STATE
@@ -75,7 +78,7 @@ watch(
    USE CASES
 ================================ */
 const { updateProfile, loading: saving } = useUpdateProfileUseCase()
-const { upload } = useUploadProfileMediaUseCase()
+const { upload } = useUploadService()
 
 /* ===============================
    VALIDATIONS (UX)
@@ -125,17 +128,31 @@ const onAvatarUpload = async (file: File) => {
     return
   }
 
-  uploadingAvatar.value = true
-  selectedAvatarFileName.value = file.name  // Guardamos el nombre del archivo
+  try {
+    uploadingAvatar.value = true
+    selectedAvatarFileName.value = file.name
 
-  const url = await upload(file, 'avatar')
-  if (url && form.value) {
-    form.value.avatarUrl = url
-    toast.add({ color: 'success', description: 'Avatar actualizado' })
+    const result = await upload(file, 'avatar')
+
+    if (form.value) {
+      form.value.avatarUrl = result.publicUrl
+    }
+
+    toast.add({
+      color: 'success',
+      description: 'Avatar actualizado'
+    })
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : 'Error inesperado: No  se pudo subir el avatar'
+    toast.add({ color: 'error', description: message })
+  } finally {
+    uploadingAvatar.value = false
   }
-
-  uploadingAvatar.value = false
 }
+
+
+
 
 const onCvUpload = async (file: File) => {
   if (file.type !== 'application/pdf') {
@@ -143,17 +160,51 @@ const onCvUpload = async (file: File) => {
     return
   }
 
-  uploadingCv.value = true
-  selectedCvFileName.value = file.name  // Guardamos el nombre del archivo
+  try {
+    uploadingCv.value = true
+    selectedCvFileName.value = file.name
 
-  const url = await upload(file, 'cv')
-  if (url && form.value) {
-    form.value.cvUrl = url
-    toast.add({ color: 'success', description: 'CV subido correctamente' })
+    const result = await upload(file, 'cv')
+
+    if (form.value) {
+      // ⬅️ GUARDAMOS SOLO EL PATH
+      form.value.cvUrl = result.path
+    }
+
+    toast.add({
+      color: 'success',
+      description: 'CV subido correctamente'
+    })
+  } catch (err) {
+    const message =
+    err instanceof Error ? err.message : 'Error inesperado: No se pudo subir el CV'
+    toast.add({ color: 'error', description: message })
+  } finally {
+    uploadingCv.value = false
+  }
+}
+
+//visulaizar el archivo sin problemas  de  bucket puvlico o privado atravez de url publica
+const openCvPreview = async () => {
+  if (!form.value?.cvUrl) return
+
+  const { data, error } = await useSupabaseClient()
+    .storage
+    .from('documents')
+    .createSignedUrl(form.value.cvUrl, 60)
+
+  if (error || !data?.signedUrl) {
+    toast.add({
+      color: 'error',
+      description: 'No se pudo abrir el CV'
+    })
+    return
   }
 
-  uploadingCv.value = false
+  window.open(data.signedUrl, '_blank')
 }
+
+
 
 const openAvatarPicker = () => {
   avatarInput.value?.click()
@@ -187,6 +238,12 @@ const validateAndApplyAvatarUrl = async () => {
     })
   }
 }
+
+//usar cuando solo se quiere mostar el nombre y no toda la ruta. 
+const cvFileLabel = computed(() =>
+  form.value?.cvUrl?.replace(/^cv-/, '') ?? ''
+)
+
 
 
 </script>
@@ -236,7 +293,7 @@ const validateAndApplyAvatarUrl = async () => {
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                <UIcon name="i-heroicons-camera" class="text-xl text-primary" />
+                <UIcon name="i-lucide-camera" class="text-xl text-primary" />
               </div>
               <div>
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Foto de Perfil</h2>
@@ -244,7 +301,7 @@ const validateAndApplyAvatarUrl = async () => {
               </div>
             </div>
             <UBadge v-if="uploadingAvatar" color="info" variant="soft">
-              <UIcon name="i-heroicons-arrow-path" class="animate-spin" />
+              <UIcon name="i-lucide-refresh-cw" class="animate-spin" />
               Subiendo...
             </UBadge>
           </div>
@@ -269,7 +326,7 @@ const validateAndApplyAvatarUrl = async () => {
             </UBadge>
           </div>
 
-          <div class="flex-1 space-y-3 w-full">
+          <div class="flex-1 space-y-3 w-full ">
             <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
               Sube una imagen que te represente profesionalmente. Se recomienda usar una foto de alta calidad con fondo neutro.
             </p>
@@ -555,7 +612,7 @@ const validateAndApplyAvatarUrl = async () => {
                 <UIcon name="i-heroicons-document-check" class="text-green-600 dark:text-green-400 text-xl" />
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-white">CV subido correctamente</p>
+                <p class="text-sm font-medium text-gray-900 dark:text-white">CV preview</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ form.cvUrl }}</p>
               </div>
               <UButton
@@ -563,9 +620,8 @@ const validateAndApplyAvatarUrl = async () => {
                 variant="ghost"
                 icon="i-heroicons-arrow-top-right-on-square"
                 size="sm"
-                :to="form.cvUrl"
-                target="_blank"
                 square
+                @click="openCvPreview"
               />
             </div>
           </div>

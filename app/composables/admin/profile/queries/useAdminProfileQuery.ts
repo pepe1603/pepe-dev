@@ -26,12 +26,17 @@ export const useAdminProfileQuery = () => {
       .single<ProfileRow>()
 
     if (dbError) {
+      console.error('error en dbError (useAdminProfileQuery) : ', dbError);
       error.value = dbError.message
       loading.value = false
       return
     }
 
+    console.log('data perfil de supabase crudo: ', data)
+
     form.value = profileToFormMapper(data)
+
+    console.log('data  convertido a formo value por profileToFormMapper: ', form.value)
     loading.value = false
   }
 

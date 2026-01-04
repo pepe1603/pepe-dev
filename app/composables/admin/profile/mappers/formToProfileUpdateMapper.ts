@@ -9,19 +9,19 @@ export const formToProfileUpdateMapper = (
 ): ProfileUpdate => {
   return {
     full_name: form.fullName,
-    headline: form.headline,
-    bio: form.bio,
-    location: form.location,
-    email_public: form.emailPublic,
+    headline: form.headline || null,
+    bio: form.bio || null,
+    location: form.location || null,
+    email_public: form.emailPublic || null,
 
-    github_url: form.socials.github,
-    linkedin_url: form.socials.linkedin,
-    twitter_url: form.socials.twitter,
-    website_url: form.socials.website,
+    github_url: form.socials.github || null,
+    linkedin_url: form.socials.linkedin || null,
+    twitter_url: form.socials.twitter || null,
+    website_url: form.socials.website || null,
 
-    avatar_url: form.avatarUrl,
-    cv_url: form.cvUrl,
+    avatar_url: form.avatarUrl || null,
+    cv_url: form.cvUrl || null,
 
-    updated_at: new Date().toISOString(),
+    // ❌ NADA DE updated_at AQUÍ
   }
 }

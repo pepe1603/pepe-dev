@@ -22,12 +22,15 @@ export const useUpdateProfileUseCase = () => {
 
     const payload = formToProfileUpdateMapper(form)
 
+    console.log(' data update (useUpdateProfileUseCase) : ', payload)
+
     const { error: dbError } = await supabase
       .from('profiles')
       .update(payload)
       .eq('id', user.value.sub) //usamos sub no id ,sun continene el uuid
 
     if (dbError) {
+      console.error('Ocurrio un error (useUpdateProfileUseCase): ', error, dbError.message, dbError.cause)
       error.value = dbError.message
       loading.value = false
       return

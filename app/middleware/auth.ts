@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   if (isAuthenticated.value && to.path.startsWith('/auth')) {
-    return navigateTo('/')
+    return navigateTo('dashboard-home')
   }
   //futuras rrutas protegidas
   if (!isAuthenticated.value && to.path.startsWith('/admin')) {

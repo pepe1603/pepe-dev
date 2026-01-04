@@ -31,7 +31,6 @@ const pageDescription = computed(
       v-model:open="sidebarOpen"
       mode="drawer"
       collapsible
-      :default-size="45"
     >
       <template #header="{ collapsed }">
         <div class="flex items-center gap-2">
