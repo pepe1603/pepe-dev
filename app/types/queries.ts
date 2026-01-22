@@ -46,8 +46,18 @@ export type PublicProjectDetail = PublicProjectListItem & {
   repo_url: string | null
   tags: string[] | null
   technologies: Technology[]
-  media: Media[]
+  media: PublicMediaItem[]
 }
+
+
+export type PublicMediaItem = {
+  id: string
+  url: string
+  alt: string | null
+  caption: string | null
+  sort_order: number
+}
+
 
 // Skills
 export type PublicSkillItem = {
@@ -69,7 +79,22 @@ export type PublicExperienceItem = Pick<
   | 'end_date'
   | 'location'
   | 'url'
+  | 'project_id'
+  | 'project_title'
+  | 'project_slug'
+  | 'project_thumbnail_url'
 >
+// Technologies (public)
+export type PublicTechnologyItem = {
+  id: string
+  name: string
+  icon: string | null
+  color: string | null
+  website_url: string | null
+  description: string | null
+}
+
+
 
 // Re-exportar enums
 export type { SkillLevel } from './domain'

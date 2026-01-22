@@ -3,7 +3,7 @@
 import ProjectList from '~/components/ui/ProjectList.vue'
 import { useProjectsSeoUseCase } from '~/composables/public/seo/useProjectsSeoUseCase'
 import { useSeoHead } from '~/composables/public/seo/useSeoHead'
-import { usePublicProjectsCase } from '~/composables/public/usecases/usePublicProjectsUseCase' //error: Module '"~/composables/public/usecases/usePublicProjectsUseCase"' has no exported member 'usePublicProjectsCase'. 
+import { usePublicProjectsCase } from '~/composables/public/usecases/usePublicProjectsUseCase'
 
 definePageMeta({
   title: 'Proyectos',
@@ -19,6 +19,7 @@ const {
   pending,
   error,
 } = usePublicProjectsCase()
+
 </script>
 
 <template>

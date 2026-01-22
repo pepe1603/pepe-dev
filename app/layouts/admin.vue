@@ -1,25 +1,29 @@
 <!-- app/layouts/admin.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from '#imports'
 import type { NavigationMenuItem } from '@nuxt/ui'
+
+// ✅ Definir props que puede recibir el layout
+interface Props {
+  title?: string
+  description?: string
+}
+
+const props = defineProps<Props>()
 
 const adminNavigation: NavigationMenuItem[] = [
   { label: 'Perfil', icon: 'i-lucide-user', to: '/admin/profile' },
-  // { label: 'Proyectos', icon: 'i-lucide-folder-kanban', to: '/admin/projects' },
-  // { label: 'Experiencia', icon: 'i-lucide-briefcase', to: '/admin/experiences' },
-  // { label: 'Skills', icon: 'i-lucide-star', to: '/admin/skills' }
+  { label: 'Proyectos', icon: 'i-lucide-folder-kanban', to: '/admin/projects' },
+  { label: 'Tecnologias', icon: 'i-lucide-microchip', to: '/admin/technologies' },
+  { label: 'Experiencia', icon: 'i-lucide-briefcase', to: '/admin/experiences' },
+  { label: 'Skills', icon: 'i-lucide-star', to: '/admin/skills' }
 ]
-
-const route = useRoute()
 
 const sidebarOpen = ref(false)
 
-
-const pageTitle = computed(() => route.meta.title as string | undefined)
-const pageDescription = computed(
-  () => route.meta.description as string | undefined
-)
+// ✅ Usar props directamente (más simple y reactivo)
+const pageTitle = computed(() => props.title)
+const pageDescription = computed(() => props.description)
 </script>
 
 <template>
@@ -90,34 +94,40 @@ const pageDescription = computed(
 
       <!-- CONTENT -->
       <template #body>
-          <!-- PAGE HEADER -->
-        <div
-          v-if="pageTitle || pageDescription"
-          class="flex items-start justify-between gap-6"
-        >
-          <div class="space-y-2 md:space-y-4">
-            <h1
-              v-if="pageTitle"
-              class="text-2xl md:text-3xl font-semibold text-neutral-900 dark:text-neutral-100"
-            >
-              {{ pageTitle }}
-            </h1>
+        <div class="space-y-3">
+                    <!-- PAGE HEADER -->
+                <div
+                  v-if="pageTitle || pageDescription"
+                  class="flex items-start justify-between gap-6"
+                >
+                  <div class="space-y-2 md:space-y-4">
+                    <h1
+                      v-if="pageTitle"
+                      class="text-2xl md:text-3xl font-semibold text-neutral-900 dark:text-neutral-100"
+                    >
+                      {{ pageTitle }}
+                    </h1>
 
-            <p
-              v-if="pageDescription"
-              class="text-sm text-neutral-500 dark:text-neutral-400"
-            >
-              {{ pageDescription }}
-            </p>
-          </div>
+                    <p
+                      v-if="pageDescription"
+                      class="text-sm text-neutral-500 dark:text-neutral-400"
+                    >
+                      {{ pageDescription }}
+                    </p>
+                  </div>
 
-          <!-- Acciones por página (opcional) -->
-          <div class="flex items-center gap-2">
-            <slot name="page-actions" />
-          </div>
+                  <!-- Acciones por página (opcional) -->
+                  <div
+                    v-if="$slots['page-actions']"
+                    class="flex items-center gap-2"
+                  >
+                    <slot name="page-actions" />
+                  </div>
+
+                </div>
+
+                <slot />
         </div>
-
-        <slot />
       </template>
 
     </UDashboardPanel>

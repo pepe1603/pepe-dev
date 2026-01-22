@@ -1,10 +1,10 @@
 <!-- app/pages/index.vue -->
 <script setup lang="ts" name="LandingPage">
 import ProfileHero from '~/components/ui/ProfileHero.vue'
-import SkillsSection from '~/components/ui/SkillsSection.vue'
+import TechnologiesSection from '~/components/ui/TechnologiesSection.vue'
 
 import { usePublicProfileCase } from '~/composables/public/usecases/usePublicProfileUseCase'
-import { usePublicSkillsCase } from '~/composables/public/usecases/usePublicSkillsUseCase'
+import { usePublicTechnologiesCase } from '~/composables/public/usecases/usePublicTechnologiesUseCase'
 
 import { useHomeSeoUseCase } from '~/composables/public/seo/useHomeSeoUseCase'
 import { useSeoHead } from '~/composables/public/seo/useSeoHead'
@@ -25,10 +25,11 @@ const {
 } = usePublicProfileCase()
 
 const {
-  data: skills,
-  pending: skillsPending,
-  error: skillsError,
-} = usePublicSkillsCase()
+  data: technologies,
+  pending: technologiesPending,
+  error: technologiesError
+} = usePublicTechnologiesCase()
+
 </script>
 
 <template>
@@ -55,33 +56,33 @@ const {
       />
     </section>
 
-    <!-- SKILLS -->
+    <!-- TECHNOLOGIES -->
     <section>
-      <USkeleton
-        v-if="skillsPending"
-        class="h-40 w-full"
-      />
+      <USkeleton v-if="technologiesPending" class="h-40 w-full" />
 
       <UAlert
-        v-else-if="skillsError"
+        v-else-if="technologiesError"
         title="Error"
-        description="No se pudieron cargar las habilidades"
+        description="No se pudieron cargar las tecnologías"
         icon="i-lucide-alert-circle"
         color="error"
       />
 
-      <SkillsSection
-        v-else-if="skills.length"
-        :categories="skills"
+      <TechnologiesSection
+        v-else-if="technologies.length"
+        :technologies="technologies"
+        flat
       />
 
       <UEmpty
         v-else
-        title="Sin habilidades"
-        description="Aún no hay habilidades públicas"
-        icon="i-lucide-code"
+        title="Sin tecnologías"
+        description="Aún no hay tecnologías públicas"
+        icon="i-lucide-cpu"
       />
     </section>
+
+
 
   </main>
 </template>

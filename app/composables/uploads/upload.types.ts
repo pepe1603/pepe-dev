@@ -6,12 +6,12 @@ export type UploadBucket =
   | 'project-thumbnails'
 
 export type UploadTarget =
-  | 'avatar'
+  | 'avatars'
   | 'cv'
   | 'certificate'
   | 'contract'
   | 'invoice'
-  | 'project-thumbnail'
+  | 'project-thumbnails'
   | 'project-media'
 
 export interface UploadResult {

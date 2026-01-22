@@ -17,7 +17,7 @@ export const uploadConfig: Record<
   /* =========================
      AVATAR (1 por usuario)
   ========================== */
-  avatar: {
+  avatars: {
     bucket: 'avatars',
     maxSizeMB: 10,
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
@@ -83,7 +83,7 @@ export const uploadConfig: Record<
   /* =========================
      PROJECT THUMBNAIL (1 por proyecto)
   ========================== */
-  'project-thumbnail': {
+  'project-thumbnails': {
     bucket: 'project-thumbnails',
     maxSizeMB: 5,
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'],

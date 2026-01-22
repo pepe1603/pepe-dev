@@ -1,5 +1,6 @@
 <script setup lang="ts" name="ProjectsSection">
 import type { ProjectView } from '~/composables/public/views/useProjectsView'
+import ProjectCard from './ProjectCard.vue';
 
 defineProps<{
   projects: ProjectView[]

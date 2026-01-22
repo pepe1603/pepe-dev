@@ -1,99 +1,105 @@
-<!-- app/pages/admin/index.vue -->
 <script setup lang="ts">
-// Admin Dashboard (empty state)
-// Sin lógica
-// Sin datos
-// Sin queries
+import { useAdminDashboardQuery } from '~/composables/admin/dashboard/queries/useAdminDashboardQuery'
+import { useAdminDashboardView } from '~/composables/admin/dashboard/views/useAdminDashboardView'
 
 definePageMeta({
-  //Definimos el layout explicitamente
-  layout: false,
   title: 'Dashboard',
-  name: 'dashboard-home',
-  description: 'Vista general del estado de tu perfil y proyectos.',
+  layout: 'admin',
+  name: 'admin-dashboard',
   middleware: 'admin-auth',
 })
+
+const { data, pending, error } = useAdminDashboardQuery()
+
+const dashboard = computed(() =>
+  useAdminDashboardView(data.value ?? [])
+)
 </script>
 
 <template>
-  <NuxtLayout name="admin">
-    <!-- PAGE ACTIONS -->
-    <template #page-actions>
-      <UButton
-        color="primary"
-        variant="soft"
-        icon="i-lucide-plus"
-      >
-        Acción fake
-      </UButton>
-    </template>
-
-    <!-- PAGE CONTENT -->
+  <div>
+  <ClientOnly>
     <div class="space-y-8">
 
-      <!-- Empty State -->
-      <UCard
-        class="border-dashed border-neutral-300 dark:border-neutral-700"
+      <!-- 🔄 LOADING -->
+      <div
+        v-if="pending"
+        class="grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div
-          class="flex flex-col items-center justify-center
-                text-center py-16 px-6 gap-4"
+        <UCard v-for="i in 3" :key="i">
+          <USkeleton class="h-4 w-24 mb-2" />
+          <USkeleton class="h-8 w-16" />
+        </UCard>
+      </div>
+
+      <!-- ❌ ERROR -->
+      <UAlert
+        v-else-if="error"
+        color="error"
+        icon="i-lucide-alert-circle"
+        title="Error"
+        description="No se pudo cargar el dashboard"
+      />
+
+      <!-- 📭 EMPTY -->
+      <UEmpty
+        v-else-if="!dashboard.length"
+        title="Dashboard vacío"
+        description="Aún no hay contenido"
+        icon="i-lucide-layout-dashboard"
+      />
+
+      <!-- ✅ DATA -->
+      <div
+        v-else
+        class="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+        <UCard
+          v-for="entity in dashboard"
+          :key="entity.entity"
         >
-          <UIcon
-            name="i-lucide-layout-dashboard"
-            class="w-12 h-12 text-neutral-400"
-          />
+          <div class="space-y-3">
 
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium">
-              Dashboard listo
-            </h3>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400 max-w-md">
-              Desde aquí podrás gestionar tu perfil, proyectos, experiencia y skills.
-              Cuando empecemos a conectar datos, este panel mostrará métricas y accesos rápidos.
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-medium text-muted">
+                {{ entity.label }}
+              </h3>
+              <UIcon
+                name="i-lucide-database"
+                class="w-5 h-5 text-primary"
+              />
+            </div>
+
+            <p class="text-3xl font-semibold">
+              {{ entity.total }}
             </p>
+
+            <div class="flex gap-4 text-sm text-muted">
+              <span>✔ {{ entity.published }} publicados</span>
+              <span>✎ {{ entity.drafts }} drafts</span>
+            </div>
+
+            <!-- Últimos drafts -->
+            <div v-if="entity.lastDrafts.length" class="pt-2 space-y-1">
+              <p class="text-xs uppercase text-muted">
+                Últimos borradores
+              </p>
+              <ul class="text-sm space-y-1">
+                <li
+                  v-for="draft in entity.lastDrafts"
+                  :key="draft.id"
+                  class="truncate"
+                >
+                  • {{ draft.title }}
+                </li>
+              </ul>
+            </div>
+
           </div>
-
-          <div class="flex gap-3 pt-4">
-            <UButton
-              variant="soft"
-              color="primary"
-              icon="i-lucide-user"
-              :to="{name: 'admin-profile-page'}"
-            >
-              Editar perfil
-            </UButton>
-
-            <UButton
-              variant="ghost"
-              color="neutral"
-              icon="i-lucide-folder-kanban"
-            >
-              Ver proyectos
-            </UButton>
-          </div>
-        </div>
-      </UCard>
-
-      <!-- Placeholder Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <UCard>
-          <p class="text-sm text-neutral-500">Perfil</p>
-          <p class="text-2xl font-semibold mt-2">—</p>
-        </UCard>
-
-        <UCard>
-          <p class="text-sm text-neutral-500">Proyectos</p>
-          <p class="text-2xl font-semibold mt-2">—</p>
-        </UCard>
-
-        <UCard>
-          <p class="text-sm text-neutral-500">Skills</p>
-          <p class="text-2xl font-semibold mt-2">—</p>
         </UCard>
       </div>
 
     </div>
-
-  </NuxtLayout>
+    </ClientOnly>
+  </div>
 </template>

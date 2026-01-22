@@ -1,9 +1,6 @@
 // app/composables/public/presentation/useSkillsView.ts
 import type { PublicSkillItem, SkillLevel } from '~/types/queries'
 
-/**
- * Colores permitidos por UBadge
- */
 export type BadgeColor =
   | 'primary'
   | 'secondary'
@@ -37,27 +34,26 @@ export const useSkillsView = (
       advanced: 'success',
       expert: 'primary'
     }
-
     return colors[level]
   }
 
-  const mapped: SkillViewModel[] = skills.map(skill => ({
-    id: skill.id,
-    name: skill.name,
-    level: skill.level,
-    category: skill.category ?? 'Other',
-    displayOrder: skill.display_order,
-    levelColor: getLevelColor(skill.level)
-  }))
+  const mapped: SkillViewModel[] = skills.map(skill => {
+    const rawCategory = skill.category?.trim() || 'Uncategorized'
+
+    return {
+      id: skill.id,
+      name: skill.name,
+      level: skill.level,
+      category: rawCategory,
+      displayOrder: skill.display_order,
+      levelColor: getLevelColor(skill.level)
+    }
+  })
 
   const grouped = mapped.reduce<Record<string, SkillViewModel[]>>(
     (acc, skill) => {
       const category = skill.category
-
-      if (!acc[category]) {
-        acc[category] = []
-      }
-
+      acc[category] ??= []
       acc[category].push(skill)
       return acc
     },

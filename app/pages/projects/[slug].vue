@@ -1,4 +1,4 @@
-<!-- //app/pages/projeects/[slug].vue -->
+<!-- app/pages/projects/[slug].vue -->
 <script setup lang="ts" name="ProjectDetailPage">
 import { useRoute } from 'vue-router'
 import ProjectDetail from '~/components/ui/ProjectDetail.vue'
@@ -11,26 +11,19 @@ definePageMeta({
   name: 'project-slug',
 })
 
-
-
 const route = useRoute()
 const slug = route.params.slug as string
 
-const {
-  data: project,
-  pending,
-  error,
-} = usePublicProjectDetailUseCase(slug)
+const { data: project, pending, error } =
+  usePublicProjectDetailUseCase(slug)
 
-// SEO dinámico correcto
 const seo = useProjectDetailSeoUseCase(project, slug)
 useSeoHead(seo)
-
 </script>
 
 <template>
-  <article class="space-y-10">
-    <USkeleton v-if="pending" class="h-60 w-full" />
+  <article class="max-w-6xl mx-auto px-4 py-10">
+    <USkeleton v-if="pending" class="h-72 w-full rounded-xl" />
 
     <UAlert
       v-else-if="error"
@@ -42,10 +35,8 @@ useSeoHead(seo)
 
     <ProjectDetail
       v-else-if="project"
-      :project="project" 
+      :project="project"
     />
-    <!-- error:  Type '{ id: string | null; title: string; description: string; tags: string[]; demoUrl: string | null; repoUrl: string | null; technologies: { id: string; name: string; color: string | null; icon: string | null; website: string | null; }[]; gallery: { ...; }[]; }' is missing the following properties from type 'ProjectView': slug, excerpt, featured, thumbnail, publishedAt -->
-
 
     <UEmpty
       v-else

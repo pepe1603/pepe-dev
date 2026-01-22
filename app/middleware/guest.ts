@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(() => {
     
             // 3. Redirige a la página principal del dashboard
             // Usamos el nombre de la ruta para mayor robustez
-            return navigateTo({ name: 'dashboard-home' });
+            return navigateTo({ name: 'admin-dashboard' });
   }
 
   // Si el usuario no existe, se permite el acceso a la ruta (Login/Register).

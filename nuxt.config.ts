@@ -49,10 +49,10 @@ export default defineNuxtConfig({
       name: 'page',
       mode: 'out-in'
     },
-    layoutTransition: {
+    layoutTransition: false/*{//para desactivar transsicioni en layout y evirtar warnings
       name: 'layout',
       mode: 'out-in'
-    }
+    }*/
   },
 
     // Configuración de fuentes

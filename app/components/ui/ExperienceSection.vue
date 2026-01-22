@@ -14,7 +14,7 @@ defineProps<{
       <p class="text-muted">Mi recorrido profesional y proyectos anteriores</p>
     </header>
 
-    <div class="space-y-6">
+    <div class="container m-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
       <ExperienceCard
         v-for="exp in experiences"
         :key="exp.id"

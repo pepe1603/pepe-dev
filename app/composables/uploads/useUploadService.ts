@@ -64,7 +64,10 @@ export function useUploadService () {
 
     if (
       config.bucket === 'avatars' ||
-      config.bucket === 'project-thumbnails'
+      
+      config.bucket === 'project-thumbnails' ||
+      config.bucket === 'project-media'
+      
     ) {
       const { data } = supabase.storage
         .from(config.bucket)
@@ -72,9 +75,11 @@ export function useUploadService () {
 
       publicUrl = data.publicUrl
     }
-
+    
     return { path, publicUrl }
   }
+
+  
 
   return { upload }
 }

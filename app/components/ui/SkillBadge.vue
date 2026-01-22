@@ -15,3 +15,4 @@ defineProps<{
     {{ skill.name }}
   </UBadge>
 </template>
+

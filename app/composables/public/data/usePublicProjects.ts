@@ -24,6 +24,8 @@ export const usePublicProjects = () => {
       return []
     }
 
+    console.log('data projects public: ', data)
+
     return data
   }
 

@@ -22,18 +22,26 @@ export const usePublicProjectBySlug = () => {
         technologies:project_technologies (
           technology:technologies (*)
         ),
-        media (*)
+        media (
+          id,
+          url,
+          alt,
+          caption,
+          sort_order
+        )
       `)
       .eq('slug', slug)
+      .order('sort_order', { foreignTable: 'media', ascending: true })
       .single()
 
     if (error) {
       console.error('[Project slug]', error)
       return null
     }
+    console.log('data prioject slug: ', data)
 
     return {
-      ...data,
+         ...data,
       technologies: data.technologies.map(t => t.technology),
     }
   }
