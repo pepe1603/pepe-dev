@@ -5,6 +5,7 @@ import { NuxtLink } from '#components'
 defineProps<{
   projects: ProjectView[]
 }>()
+
 </script>
 
 <template>

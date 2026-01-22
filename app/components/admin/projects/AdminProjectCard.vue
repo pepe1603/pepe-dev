@@ -30,6 +30,10 @@ const openConfirm = (action: 'delete' | 'archive') => {
   targetAction.value = action
   showConfirm.value = true
 }
+const openPublicView = (slug: string, event: MouseEvent) => {
+  event.preventDefault() // Evita que el NuxtLink se active
+  window.open(`/projects/${slug}`, '_blank')
+}
 </script>
 
 <template>
@@ -44,6 +48,17 @@ const openConfirm = (action: 'delete' | 'archive') => {
         class="relative flex items-center justify-center text-white w-4 h-4"
       />
     </div>
+            <!-- Botón para abrir en nueva pestaña -->
+        <UButton
+          icon="i-lucide-external-link"
+          color="primary"
+          variant="soft"
+          label="preview"
+          size="xs"
+          class="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-70 transition-opacity border"
+          aria-label="Abrir en nueva pestaña"
+          @click="(e) => openPublicView(project.slug, e)"
+        />
 
     <!-- THUMBNAIL -->
     <div class="relative h-48 bg-muted overflow-hidden">

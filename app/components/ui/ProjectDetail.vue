@@ -19,7 +19,6 @@ defineProps<{
         {{ project.excerpt }}
       </p>
 
-
       <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
         {{ project.description }}
       </p>
@@ -36,10 +35,9 @@ defineProps<{
           class="w-full h-72 md:h-96 object-cover"
           loading="lazy"
         />
-        <p v-if="project.publishedAt" class="text-xs text-gray-400 absolute italic bottom-2 right-3 z-10 hover:backdrop-blur-xs py-0.5 px-1  rounded-2xl">
+        <p v-if="project.publishedAt" class="text-xs text-gray-400 absolute italic bottom-2 right-3 z-10 hover:backdrop-blur-xs py-0.5 px-1 rounded-2xl">
           Publicado {{ new Date(project.publishedAt).toLocaleDateString() }}
         </p>
-
       </div>
 
       <!-- ACTIONS CTA -->
@@ -99,20 +97,32 @@ defineProps<{
     <!-- GALLERY -->
     <section v-if="project.gallery.length" class="space-y-4">
       <h2 class="text-2xl font-semibold">Project gallery</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <UCard
-          v-for="img in project.gallery"
-          :key="img.id"
-          class="overflow-hidden rounded-lg"
-        >
+
+      <UCarousel
+        v-slot="{ item }"
+        :items="project.gallery"
+        arrows
+        dots
+        loop
+        :autoplay="{ delay: 5000 }"
+        :prev="{ variant: 'solid', color: 'neutral' }"
+        :next="{ variant: 'solid', color: 'neutral' }"
+        :ui="{
+          container: 'h-80',
+          prev: 'start-4',
+          next: 'end-4'
+        }"
+        class="w-full"
+      >
+        <div class="relative w-full h-80 rounded-lg overflow-hidden shadow-md">
           <img
-            :src="img.src"
-            :alt="img.alt || project.title"
-            class="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
+            :src="item.src"
+            :alt="item.alt || project.title"
+            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
             loading="lazy"
           />
-        </UCard>
-      </div>
+        </div>
+      </UCarousel>
     </section>
 
   </section>
