@@ -14,8 +14,14 @@ export const usePublicExperiences = () => {
         start_date,
         end_date,
         location,
-        url
+        url,
+
+        project_id,
+        project_title,
+        project_slug,
+        project_thumbnail_url
       `)
+      .order('sort_order', { ascending: true, nullsFirst: false })
       .order('start_date', { ascending: false })
 
     if (error) {
@@ -23,7 +29,7 @@ export const usePublicExperiences = () => {
       return []
     }
 
-    return data
+    return data ?? []
   }
 
   return { fetchExperiences }

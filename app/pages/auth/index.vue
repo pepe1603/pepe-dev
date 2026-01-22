@@ -2,6 +2,7 @@
 definePageMeta({
   layout: 'auth',
   name: 'auth-home',
+  middleware: 'guest',
 })
 
 const toast = useToast()

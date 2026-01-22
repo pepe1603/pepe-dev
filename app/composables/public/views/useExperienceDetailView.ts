@@ -27,6 +27,6 @@ export const useExperienceDetailView = (
       : `${experience.start_date} - Present`,
     location: experience.location ?? null,
     url: experience.url ?? null,
-    description: experience.subtitle ?? '', // puedes cambiarlo si agregas un campo 'description'
+    description: experience.subtitle ?? '',
   }
 }

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -10,6 +10,11 @@ export default defineNuxtConfig({
     '@nuxt/fonts', // Asegúrate de que esté aquí
     '@nuxtjs/supabase', // El módulo oficial
   ],
+
+  supabase: {
+    redirect: false,
+
+  },
 
   runtimeConfig: {
     public: {
@@ -44,10 +49,10 @@ export default defineNuxtConfig({
       name: 'page',
       mode: 'out-in'
     },
-    layoutTransition: {
+    layoutTransition: false/*{//para desactivar transsicioni en layout y evirtar warnings
       name: 'layout',
       mode: 'out-in'
-    }
+    }*/
   },
 
     // Configuración de fuentes
@@ -57,6 +62,7 @@ export default defineNuxtConfig({
       { name: 'Fira Code', provider: 'google' } // Excelente para toques "dev"
     ]
   },
+  
   
 })
 

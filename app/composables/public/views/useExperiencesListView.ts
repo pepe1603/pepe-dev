@@ -9,6 +9,13 @@ export interface ExperienceListItemView {
   period: string
   location: string | null
   url: string | null
+
+  project?: {
+    id: string  | null
+    title: string | null
+    slug: string |  null
+    thumbnail_url: string | null
+  } | null
 }
 
 export const useExperiencesListView = (
@@ -24,5 +31,16 @@ export const useExperiencesListView = (
       : `${exp.start_date} - Present`,
     location: exp.location ?? null,
     url: exp.url ?? null,
+
+    project: exp.project_id
+      ? {
+          id: exp.project_id,
+          title: exp.project_title,
+          slug: exp.project_slug,
+          thumbnail_url: exp.project_thumbnail_url,
+        }
+      : null,
   }))
 }
+
+

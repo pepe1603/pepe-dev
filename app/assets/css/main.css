@@ -6,3 +6,25 @@
   --font-family-sans: "Geist", sans-serif;
   --font-family-mono: "Fira Code", monospace;
 }
+
+
+/*styles de projectForm*/
+.input {
+  @apply w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm;
+}
+
+.textarea {
+  @apply w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm;
+}
+
+.btn-primary {
+  @apply rounded bg-black px-4 py-2 text-sm text-white hover:bg-gray-800 disabled:opacity-50;
+}
+
+.btn-secondary {
+  @apply rounded border px-4 py-2 text-sm;
+}
+
+.checkbox {
+  @apply h-4 w-4;
+}

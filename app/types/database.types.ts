@@ -1,4 +1,4 @@
-//app/types/supabase.tss generado por supabse type gen.
+//app/types/database.types.ts
 export type Json =
   | string
   | number
@@ -144,6 +144,13 @@ export type Database = {
             foreignKeyName: "experiences_related_project_id_fkey"
             columns: ["related_project_id"]
             isOneToOne: false
+            referencedRelation: "experiences_public"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "experiences_related_project_id_fkey"
+            columns: ["related_project_id"]
+            isOneToOne: false
             referencedRelation: "projects"
             referencedColumns: ["id"]
           },
@@ -227,6 +234,13 @@ export type Database = {
           url?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "experiences_public"
+            referencedColumns: ["project_id"]
+          },
           {
             foreignKeyName: "media_project_id_fkey"
             columns: ["project_id"]
@@ -374,6 +388,13 @@ export type Database = {
           trashed_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "project_technologies_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "experiences_public"
+            referencedColumns: ["project_id"]
+          },
           {
             foreignKeyName: "project_technologies_project_id_fkey"
             columns: ["project_id"]
@@ -633,39 +654,33 @@ export type Database = {
       }
     }
     Views: {
+      dashboard_items: {
+        Row: {
+          created_at: string | null
+          entity: string | null
+          id: string | null
+          status: Database["public"]["Enums"]["record_status"] | null
+          title: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
       experiences_public: {
         Row: {
           description: string | null
           end_date: string | null
           id: string | null
           location: string | null
+          project_id: string | null
+          project_slug: string | null
+          project_thumbnail_url: string | null
+          project_title: string | null
+          sort_order: number | null
           start_date: string | null
           subtitle: string | null
           title: string | null
           type: Database["public"]["Enums"]["experience_type"] | null
           url: string | null
-        }
-        Insert: {
-          description?: string | null
-          end_date?: string | null
-          id?: string | null
-          location?: string | null
-          start_date?: string | null
-          subtitle?: string | null
-          title?: string | null
-          type?: Database["public"]["Enums"]["experience_type"] | null
-          url?: string | null
-        }
-        Update: {
-          description?: string | null
-          end_date?: string | null
-          id?: string | null
-          location?: string | null
-          start_date?: string | null
-          subtitle?: string | null
-          title?: string | null
-          type?: Database["public"]["Enums"]["experience_type"] | null
-          url?: string | null
         }
         Relationships: []
       }
