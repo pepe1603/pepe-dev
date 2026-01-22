@@ -261,9 +261,16 @@ const goBack = () => {
             class="mb-6"
           />
 
+                    <!-- Help Text -->
+          <div class="my-6 flex items-start gap-2 text-sm text-muted">
+            <UIcon name="i-lucide-info" class="size-4 mt-0.5 shrink-0" />
+            <p>
+              After {{ isNew ? 'creating' : 'updating' }} the project, you'll be automatically redirected to the projects list.
+            </p>
+          </div>
 
-            <UContainer>
-              
+
+            <UContainer>              
               <ProjectForm
                 :model-value="form"
                 :loading="loading"
@@ -303,13 +310,7 @@ const goBack = () => {
             </UContainer>
           </div>
 
-          <!-- Help Text -->
-          <div class="mt-6 flex items-start gap-2 text-sm text-muted">
-            <UIcon name="i-lucide-info" class="size-4 mt-0.5 shrink-0" />
-            <p>
-              After {{ isNew ? 'creating' : 'updating' }} the project, you'll be automatically redirected to the projects list.
-            </p>
-          </div>
+
         </template>
       </div>
     </div>
