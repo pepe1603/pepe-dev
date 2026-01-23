@@ -4,6 +4,7 @@ import { ref, onBeforeUnmount } from 'vue'
 import { useSupabaseClient } from '#imports'
 import { useUploadService } from '~/composables/uploads/useUploadService'
 import type { MediaType } from '~/constants/mediaTypes'
+import { MEDIA_MIME_MAP } from '~/constants/mediaMimeMap';
 
 const props = defineProps<{
   projectSlug: string
@@ -30,16 +31,40 @@ const previewUrl = ref<string | null>(props.initialUrl ?? null)
 const uploading = ref(false)
 const error = ref<string | null>(null)
 
-/**
- * Detect media type from file
- */
 const detectMediaType = (file: File): MediaType => {
-  if (file.type.startsWith('image/')) return 'image'
-  if (file.type.startsWith('video/')) return 'video'
-  if (file.type.startsWith('audio/')) return 'audio'
-  if (file.type === 'application/pdf') return 'pdf'
+  const mime = file.type
+
+  // 1️⃣ match exacto
+  for (const [type, mimes] of Object.entries(MEDIA_MIME_MAP)) {
+    if (mimes.includes(mime)) {
+      return type as MediaType
+    }
+  }
+
+  // 2️⃣ fallback por prefijo permitido
+  if (mime.startsWith('image/')) return 'image'
+  if (mime.startsWith('video/')) return 'video'
+
+  // 3️⃣ fallback seguro
   return 'image'
 }
+
+
+//aceopt gfenerado
+const buildAcceptFromMediaTypes = (types: MediaType[]) => {
+  return types
+    .flatMap(type => MEDIA_MIME_MAP[type])
+    .join(',')
+}
+
+const acceptComputed = buildAcceptFromMediaTypes([
+  'image',
+  'gif',
+  'video',
+  'pdf',
+])
+
+
 
 /**
  * Handle file upload
@@ -129,13 +154,14 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Input hidden -->
-    <input
-      ref="fileInput"
-      type="file"
-      :accept="accept"
-      class="hidden"
-      @change="onFileChange"
-    />
+      <input
+        ref="fileInput"
+        type="file"
+        :accept="acceptComputed"
+        class="hidden"
+        @change="onFileChange"
+      />
+
 
     <!-- Action -->
     <UButton

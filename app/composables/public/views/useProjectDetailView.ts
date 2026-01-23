@@ -1,13 +1,12 @@
+// app/composables/public/views/useProjectDetailView.ts
 import type { PublicProjectDetail } from '~/types/queries'
+import type { MediaType } from '~/constants/mediaTypes'
 
 export interface ProjectDetailView {
   id: string
   title: string
 
-  /** Summary corto */
   excerpt: string
-
-  /** Descripción larga */
   description: string
 
   featured: boolean
@@ -23,8 +22,10 @@ export interface ProjectDetailView {
     alt: string
   }
 
-  gallery: {
+  media: {
     id: string
+    name: string
+    type: MediaType
     src: string
     alt: string
     caption: string | null
@@ -38,8 +39,6 @@ export interface ProjectDetailView {
     website: string | null
   }[]
 }
-
-
 
 export const useProjectDetailView = (
   project: PublicProjectDetail | null
@@ -57,7 +56,7 @@ export const useProjectDetailView = (
     '/project-placeholder.png'
 
   return {
-    id: project.id ?? '' ,
+    id: project.id ?? '',
     title: project.title ?? 'Sin título',
 
     excerpt: project.short_description ?? '',
@@ -84,8 +83,10 @@ export const useProjectDetailView = (
       website: t.website_url,
     })),
 
-    gallery: mediaSorted.map(m => ({
+    media: mediaSorted.map(m => ({
       id: m.id,
+      name: m.name,              
+      type: m.type as MediaType, 
       src: m.url,
       alt: m.alt ?? project.title ?? '',
       caption: m.caption,

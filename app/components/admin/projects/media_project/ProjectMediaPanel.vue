@@ -158,10 +158,11 @@ const removeItem = async (item: ProjectMediaItemModel) => {
       
       <template #description>
         <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
-          <li>Sube imágenes, videos o audios relacionados con el proyecto.</li>
+          <li>Sube imágenes o gifs y videos relacionados con el proyecto.</li>
           <li>Agrega descripciones (Alt) y captions para mejorar accesibilidad y SEO.</li>
           <li>El orden de los elementos se puede ajustar arrastrando o modificando sortOrder.</li>
           <li>Los cambios se guardan individualmente en cada media item.</li>
+          <span class="text-warning">Nota: No Audios</span>
         </ul>
       </template>
     </UAlert>
@@ -191,6 +192,7 @@ const removeItem = async (item: ProjectMediaItemModel) => {
       v-if="error"
       color="error"
       variant="soft"
+      icon="i-lucide-sad"
       :title="error"
     />
 
@@ -206,23 +208,30 @@ const removeItem = async (item: ProjectMediaItemModel) => {
       >
         <!-- Preview -->
         <div class="h-40 rounded overflow-hidden bg-muted relative mb-2">
+          <!-- Image & GIF -->
           <img
-            v-if="item.type === 'image'"
+            v-if="item.type === 'image' || item.type === 'gif'"
             :src="item.url"
             class="w-full h-full object-cover"
           />
+
+          <!-- Video -->
           <video
             v-else-if="item.type === 'video'"
             :src="item.url"
             controls
             class="w-full h-full"
           />
-          <audio
-            v-else-if="item.type === 'audio'"
-            :src="item.url"
-            controls
-            class="w-full"
-          />
+
+          <!-- PDF -->
+          <div
+            v-else-if="item.type === 'pdf'"
+            class="h-full flex items-center justify-center text-sm text-muted"
+          >
+            PDF
+          </div>
+
+          <!-- Fallback -->
           <div
             v-else
             class="h-full flex items-center justify-center text-sm text-muted"
@@ -230,6 +239,7 @@ const removeItem = async (item: ProjectMediaItemModel) => {
             Sin preview
           </div>
         </div>
+
 
          <!-- Metadata -->
         <UInput v-model="item.alt" placeholder="Alt text" size="sm" class="mb-2 w-full" />

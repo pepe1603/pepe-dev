@@ -24,6 +24,8 @@ export const usePublicProjectBySlug = () => {
         ),
         media (
           id,
+          name,
+          type,
           url,
           alt,
           caption,
