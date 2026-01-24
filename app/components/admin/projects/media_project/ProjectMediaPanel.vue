@@ -1,5 +1,5 @@
 <!-- app/components/admin/projects/media_project/ProjectMediaPanel.vue -->
- <script setup lang="ts">
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 import { MEDIA_TYPES } from '~/constants/mediaTypes'
 import type { ProjectMediaItemModel } from '~/composables/admin/projects/media_project/models/ProjectMediaItemModel'
@@ -51,6 +51,22 @@ const accordionItems = ref<AccordionItem[]>([
  * Estado editable local
  */
 const mediaItems = ref<ProjectMediaItemModel[]>([])
+
+const editingItemId = ref<string | null>(null)
+
+const isEditing = (itemId: string) => editingItemId.value === itemId
+
+const startEditing = (itemId: string) => {
+  if (editingItemId.value !== itemId) {
+    editingItemId.value = itemId
+  }
+}
+
+
+const stopEditing = () => {
+  editingItemId.value = null
+}
+
 
 watch(media, () => {
   mediaItems.value = [...media.value]
@@ -106,6 +122,8 @@ const saveItem = async (item: ProjectMediaItemModel) => {
       sortOrder: item.sortOrder,
     })
 
+    editingItemId.value = null
+
     toast.add({
       title: 'Media actualizada',
       color: 'success',
@@ -119,6 +137,7 @@ const saveItem = async (item: ProjectMediaItemModel) => {
   }
 }
 
+
 /**
  * Eliminar media
  */
@@ -126,6 +145,10 @@ const removeItem = async (item: ProjectMediaItemModel) => {
   try {
     await deleteMedia(item.id)
     mediaItems.value = mediaItems.value.filter(i => i.id !== item.id)
+
+    if (editingItemId.value === item.id) {
+      editingItemId.value = null
+    }
 
     toast.add({
       title: 'Media eliminada',
@@ -139,6 +162,25 @@ const removeItem = async (item: ProjectMediaItemModel) => {
     })
   }
 }
+
+
+
+const dropdownItems = (item: ProjectMediaItemModel) => [
+  [
+    {
+      label: 'Editar',
+      icon: 'i-lucide-pencil',
+      onSelect: () => startEditing(item.id)
+    },
+    {
+      label: 'Eliminar',
+      icon: 'i-lucide-trash',
+      onSelect: () => removeItem(item)
+    }
+  ]
+]
+
+
 </script>
 
 <template>
@@ -167,20 +209,18 @@ const removeItem = async (item: ProjectMediaItemModel) => {
       </template>
     </UAlert>
 
-
-
     <!-- Upload -->
-  <!-- Accordion para Upload -->
-      <UAccordion :items="accordionItems" :unmount-on-hide="false" >
-        <template #upload>
-          <div class="pb-4">
-            <ProjectMediaUpload
-              :project-slug="projectSlug"
-              @uploaded="onUploaded"
-            />
-          </div>
-        </template>
-      </UAccordion>
+    <!-- Accordion para Upload -->
+    <UAccordion :items="accordionItems" :unmount-on-hide="false" >
+      <template #upload>
+        <div class="pb-4">
+          <ProjectMediaUpload
+            :project-slug="projectSlug"
+            @uploaded="onUploaded"
+          />
+        </div>
+      </template>
+    </UAccordion>
 
     <!-- Loading -->
     <div v-if="loading" class="text-sm text-muted">
@@ -199,20 +239,20 @@ const removeItem = async (item: ProjectMediaItemModel) => {
     <!-- Lista -->
     <div
       v-if="mediaItems.length"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
     >
-      <div
+      <UCard
         v-for="item in mediaItems"
         :key="item.id"
-        class="border border-accented rounded-lg p-3 bg-elevated shadow-sm hover:shadow-md transition-shadow duration-200"
+        class="group"
       >
         <!-- Preview -->
-        <div class="h-40 rounded overflow-hidden bg-muted relative mb-2">
+        <div class="relative h-44 overflow-hidden rounded-md bg-muted">
           <!-- Image & GIF -->
           <img
             v-if="item.type === 'image' || item.type === 'gif'"
             :src="item.url"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
 
           <!-- Video -->
@@ -220,7 +260,7 @@ const removeItem = async (item: ProjectMediaItemModel) => {
             v-else-if="item.type === 'video'"
             :src="item.url"
             controls
-            class="w-full h-full"
+            class="w-full h-full object-cover"
           />
 
           <!-- PDF -->
@@ -228,50 +268,77 @@ const removeItem = async (item: ProjectMediaItemModel) => {
             v-else-if="item.type === 'pdf'"
             class="h-full flex items-center justify-center text-sm text-muted"
           >
-            PDF
+            📄 PDF
           </div>
 
-          <!-- Fallback -->
-          <div
-            v-else
-            class="h-full flex items-center justify-center text-sm text-muted"
+          <!-- Tipo -->
+          <UBadge
+            color="primary"
+            variant="solid"
+            size="xs"
+            class="absolute top-2 left-2 capitalize"
           >
-            Sin preview
-          </div>
+            {{ item.type }}
+          </UBadge>
         </div>
 
+        <!-- Metadata -->
+        <div 
+          v-if="isEditing(item.id)"
+          class="space-y-3 mt-4"
+        >
+          <UInput
+            v-model="item.alt"
+            size="sm"
+            class="w-full"
+            placeholder="Alt text (accesibilidad)"
+          />
 
-         <!-- Metadata -->
-        <UInput v-model="item.alt" placeholder="Alt text" size="sm" class="mb-2 w-full" />
-        <UInput v-model="item.caption" placeholder="Caption" size="sm" class="mb-2 w-full" />
+          <UInput
+            v-model="item.caption"
+            size="sm"
+            class="w-full"
+            placeholder="Caption / descripción"
+          />
 
-        <USelect
-          v-model="item.type"
-          :items="MEDIA_TYPES.map(t => ({ label: t, value: t }))"
-          size="sm"
-          class="mb-2"
-        />
+          <USelect
+            v-model="item.type"
+            :items="MEDIA_TYPES.map(t => ({ label: t, value: t }))"
+            size="sm"
+          />
 
+        </div>
 
-        <div class="flex justify-between mt-2 gap-2">
+        <USeparator class="my-4" />
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between">
+          <!-- Guardar SOLO si está editando -->
           <UButton
+            v-if="isEditing(item.id)"
             size="xs"
             color="primary"
+            icon="i-lucide-save"
             @click="saveItem(item)"
           >
             Guardar
           </UButton>
 
-          <UButton
-            size="xs"
-            color="error"
-            variant="soft"
-            @click="removeItem(item)"
-          >
-            Eliminar
-          </UButton>
+          <div v-else />
+
+          <!-- Dropdown -->
+          <UDropdownMenu :items="dropdownItems(item)">
+            <UButton
+              size="xs"
+              variant="ghost"
+              icon="i-lucide-more-vertical"
+            />
+          </UDropdownMenu>
+
         </div>
-      </div>
+
+      </UCard>
     </div>
+
   </div>
 </template>
