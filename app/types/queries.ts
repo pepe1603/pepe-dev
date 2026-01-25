@@ -52,6 +52,8 @@ export type PublicProjectDetail = PublicProjectListItem & {
 
 export type PublicMediaItem = {
   id: string
+  name: string
+  type: string
   url: string
   alt: string | null
   caption: string | null
