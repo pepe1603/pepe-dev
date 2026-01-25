@@ -50,6 +50,9 @@ export const useProfileView = (profile: PublicProfileQuery | null) => {
     headline: profile.headline ?? '',
     bio: profile.bio ?? '',
     avatar: profile.avatar_url ?? '/avatar-placeholder.png',
+    location: profile.location ?? 'No especificado',
+    email: profile.email_public ?? 'No disponible',
+    cvUrl: profile.cv_url ?? null,
     links,
     hasSocials: links.length > 0
   }

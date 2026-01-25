@@ -15,128 +15,50 @@ export type Database = {
   }
   public: {
     Tables: {
-      audit_log: {
-        Row: {
-          action: string
-          id: string
-          ip_hash: string | null
-          new_values: Json | null
-          old_values: Json | null
-          performed_at: string
-          performed_by: string
-          record_id: string
-          table_name: string
-          user_agent: string | null
-        }
-        Insert: {
-          action: string
-          id?: string
-          ip_hash?: string | null
-          new_values?: Json | null
-          old_values?: Json | null
-          performed_at?: string
-          performed_by?: string
-          record_id: string
-          table_name: string
-          user_agent?: string | null
-        }
-        Update: {
-          action?: string
-          id?: string
-          ip_hash?: string | null
-          new_values?: Json | null
-          old_values?: Json | null
-          performed_at?: string
-          performed_by?: string
-          record_id?: string
-          table_name?: string
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
       experiences: {
         Row: {
-          archived_at: string | null
-          archived_by: string | null
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           description: string
           end_date: string | null
           id: string
           location: string | null
-          published_at: string | null
-          published_by: string | null
           related_project_id: string | null
-          restored_at: string | null
-          restored_by: string | null
-          sort_order: number
           start_date: string
           status: Database["public"]["Enums"]["record_status"]
           subtitle: string | null
           title: string
-          trashed_at: string | null
-          trashed_by: string | null
           type: Database["public"]["Enums"]["experience_type"]
           updated_at: string | null
-          updated_by: string | null
           url: string | null
         }
         Insert: {
-          archived_at?: string | null
-          archived_by?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description: string
           end_date?: string | null
           id?: string
           location?: string | null
-          published_at?: string | null
-          published_by?: string | null
           related_project_id?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
-          sort_order?: number
           start_date: string
           status?: Database["public"]["Enums"]["record_status"]
           subtitle?: string | null
           title: string
-          trashed_at?: string | null
-          trashed_by?: string | null
           type?: Database["public"]["Enums"]["experience_type"]
           updated_at?: string | null
-          updated_by?: string | null
           url?: string | null
         }
         Update: {
-          archived_at?: string | null
-          archived_by?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description?: string
           end_date?: string | null
           id?: string
           location?: string | null
-          published_at?: string | null
-          published_by?: string | null
           related_project_id?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
-          sort_order?: number
           start_date?: string
           status?: Database["public"]["Enums"]["record_status"]
           subtitle?: string | null
           title?: string
-          trashed_at?: string | null
-          trashed_by?: string | null
           type?: Database["public"]["Enums"]["experience_type"]
           updated_at?: string | null
-          updated_by?: string | null
           url?: string | null
         }
         Relationships: [
@@ -168,69 +90,33 @@ export type Database = {
           alt: string | null
           caption: string | null
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           id: string
           name: string
           project_id: string
-          published_at: string | null
-          published_by: string | null
-          restored_at: string | null
-          restored_by: string | null
-          sort_order: number
-          status: Database["public"]["Enums"]["record_status"]
-          trashed_at: string | null
-          trashed_by: string | null
           type: string
           updated_at: string | null
-          updated_by: string | null
           url: string
         }
         Insert: {
           alt?: string | null
           caption?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           id?: string
           name: string
           project_id: string
-          published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
-          sort_order?: number
-          status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           type: string
           updated_at?: string | null
-          updated_by?: string | null
           url: string
         }
         Update: {
           alt?: string | null
           caption?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           id?: string
           name?: string
           project_id?: string
-          published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
-          sort_order?: number
-          status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           type?: string
           updated_at?: string | null
-          updated_by?: string | null
           url?: string
         }
         Relationships: [
@@ -259,15 +145,10 @@ export type Database = {
       }
       profiles: {
         Row: {
-          archived_at: string | null
-          archived_by: string | null
           avatar_url: string | null
           bio: string | null
           created_at: string
-          created_by: string
           cv_url: string | null
-          deleted_at: string | null
-          deleted_by: string | null
           email_public: string | null
           full_name: string
           github_url: string | null
@@ -277,28 +158,17 @@ export type Database = {
           location: string | null
           metadata: Json
           published_at: string | null
-          published_by: string | null
-          restored_at: string | null
-          restored_by: string | null
           status: Database["public"]["Enums"]["record_status"]
-          trashed_at: string | null
-          trashed_by: string | null
           twitter_url: string | null
           updated_at: string | null
-          updated_by: string | null
           views_count: number
           website_url: string | null
         }
         Insert: {
-          archived_at?: string | null
-          archived_by?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
-          created_by?: string
           cv_url?: string | null
-          deleted_at?: string | null
-          deleted_by?: string | null
           email_public?: string | null
           full_name: string
           github_url?: string | null
@@ -308,28 +178,17 @@ export type Database = {
           location?: string | null
           metadata?: Json
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           twitter_url?: string | null
           updated_at?: string | null
-          updated_by?: string | null
           views_count?: number
           website_url?: string | null
         }
         Update: {
-          archived_at?: string | null
-          archived_by?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
-          created_by?: string
           cv_url?: string | null
-          deleted_at?: string | null
-          deleted_by?: string | null
           email_public?: string | null
           full_name?: string
           github_url?: string | null
@@ -339,15 +198,9 @@ export type Database = {
           location?: string | null
           metadata?: Json
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           twitter_url?: string | null
           updated_at?: string | null
-          updated_by?: string | null
           views_count?: number
           website_url?: string | null
         }
@@ -356,36 +209,21 @@ export type Database = {
       project_technologies: {
         Row: {
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           project_id: string
           sort_order: number
           technology_id: string
-          trashed_at: string | null
-          trashed_by: string | null
         }
         Insert: {
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           project_id: string
           sort_order?: number
           technology_id: string
-          trashed_at?: string | null
-          trashed_by?: string | null
         }
         Update: {
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           project_id?: string
           sort_order?: number
           technology_id?: string
-          trashed_at?: string | null
-          trashed_by?: string | null
         }
         Relationships: [
           {
@@ -420,22 +258,14 @@ export type Database = {
       }
       projects: {
         Row: {
-          archived_at: string | null
-          archived_by: string | null
           content: Json
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           demo_url: string | null
           description: string
           id: string
           is_featured: boolean
           published_at: string | null
-          published_by: string | null
           repo_url: string | null
-          restored_at: string | null
-          restored_by: string | null
           short_description: string
           slug: string
           status: Database["public"]["Enums"]["record_status"]
@@ -443,28 +273,17 @@ export type Database = {
           tags: string[]
           thumbnail_url: string | null
           title: string
-          trashed_at: string | null
-          trashed_by: string | null
           updated_at: string | null
-          updated_by: string | null
         }
         Insert: {
-          archived_at?: string | null
-          archived_by?: string | null
           content?: Json
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           demo_url?: string | null
           description: string
           id?: string
           is_featured?: boolean
           published_at?: string | null
-          published_by?: string | null
           repo_url?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           short_description: string
           slug: string
           status?: Database["public"]["Enums"]["record_status"]
@@ -472,28 +291,17 @@ export type Database = {
           tags?: string[]
           thumbnail_url?: string | null
           title: string
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
         }
         Update: {
-          archived_at?: string | null
-          archived_by?: string | null
           content?: Json
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           demo_url?: string | null
           description?: string
           id?: string
           is_featured?: boolean
           published_at?: string | null
-          published_by?: string | null
           repo_url?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           short_description?: string
           slug?: string
           status?: Database["public"]["Enums"]["record_status"]
@@ -501,153 +309,81 @@ export type Database = {
           tags?: string[]
           thumbnail_url?: string | null
           title?: string
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
         }
         Relationships: []
       }
       skills: {
         Row: {
-          archived_at: string | null
-          archived_by: string | null
           category: string | null
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           description: string | null
-          display_order: number
           id: string
           level: Database["public"]["Enums"]["skill_level"]
           name: string
           published_at: string | null
-          published_by: string | null
-          restored_at: string | null
-          restored_by: string | null
           status: Database["public"]["Enums"]["record_status"]
-          trashed_at: string | null
-          trashed_by: string | null
           updated_at: string | null
-          updated_by: string | null
         }
         Insert: {
-          archived_at?: string | null
-          archived_by?: string | null
           category?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description?: string | null
-          display_order?: number
           id?: string
           level?: Database["public"]["Enums"]["skill_level"]
           name: string
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
         }
         Update: {
-          archived_at?: string | null
-          archived_by?: string | null
           category?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description?: string | null
-          display_order?: number
           id?: string
           level?: Database["public"]["Enums"]["skill_level"]
           name?: string
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
         }
         Relationships: []
       }
       technologies: {
         Row: {
-          archived_at: string | null
-          archived_by: string | null
           color: string | null
           created_at: string
-          created_by: string
-          deleted_at: string | null
-          deleted_by: string | null
           description: string | null
           icon: string | null
           id: string
           name: string
           published_at: string | null
-          published_by: string | null
-          restored_at: string | null
-          restored_by: string | null
           status: Database["public"]["Enums"]["record_status"]
-          trashed_at: string | null
-          trashed_by: string | null
           updated_at: string | null
-          updated_by: string | null
           website_url: string | null
         }
         Insert: {
-          archived_at?: string | null
-          archived_by?: string | null
           color?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description?: string | null
           icon?: string | null
           id?: string
           name: string
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
           website_url?: string | null
         }
         Update: {
-          archived_at?: string | null
-          archived_by?: string | null
           color?: string | null
           created_at?: string
-          created_by?: string
-          deleted_at?: string | null
-          deleted_by?: string | null
           description?: string | null
           icon?: string | null
           id?: string
           name?: string
           published_at?: string | null
-          published_by?: string | null
-          restored_at?: string | null
-          restored_by?: string | null
           status?: Database["public"]["Enums"]["record_status"]
-          trashed_at?: string | null
-          trashed_by?: string | null
           updated_at?: string | null
-          updated_by?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -675,7 +411,6 @@ export type Database = {
           project_slug: string | null
           project_thumbnail_url: string | null
           project_title: string | null
-          sort_order: number | null
           start_date: string | null
           subtitle: string | null
           title: string | null
@@ -688,6 +423,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          cv_url: string | null
           email_public: string | null
           full_name: string | null
           github_url: string | null
@@ -701,6 +437,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          cv_url?: string | null
           email_public?: string | null
           full_name?: string | null
           github_url?: string | null
@@ -714,6 +451,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          cv_url?: string | null
           email_public?: string | null
           full_name?: string | null
           github_url?: string | null
@@ -775,7 +513,6 @@ export type Database = {
         Row: {
           category: string | null
           description: string | null
-          display_order: number | null
           id: string | null
           level: Database["public"]["Enums"]["skill_level"] | null
           name: string | null
@@ -783,7 +520,6 @@ export type Database = {
         Insert: {
           category?: string | null
           description?: string | null
-          display_order?: number | null
           id?: string | null
           level?: Database["public"]["Enums"]["skill_level"] | null
           name?: string | null
@@ -791,7 +527,6 @@ export type Database = {
         Update: {
           category?: string | null
           description?: string | null
-          display_order?: number | null
           id?: string | null
           level?: Database["public"]["Enums"]["skill_level"] | null
           name?: string | null

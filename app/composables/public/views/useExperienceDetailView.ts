@@ -2,7 +2,7 @@
 import type { PublicExperienceItem } from '~/types/queries'
 
 export interface ExperienceDetailView {
-  id: string
+  id: string| null
   title: string
   subtitle: string
   type: string
@@ -18,15 +18,15 @@ export const useExperienceDetailView = (
   if (!experience) return null
 
   return {
-    id: experience.id ?? '' ,
+    id: experience.id ?? null ,
     title: experience.title ?? 'Sin título',
-    subtitle: experience.subtitle ?? '',
+    subtitle: experience.subtitle ?? 'Sin subtitulo',
     type: experience.type ?? 'work',
     period: experience.end_date
       ? `${experience.start_date} - ${experience.end_date}`
       : `${experience.start_date} - Present`,
     location: experience.location ?? null,
     url: experience.url ?? null,
-    description: experience.subtitle ?? '',
+    description: experience.subtitle ?? 'sin descripcion',
   }
 }

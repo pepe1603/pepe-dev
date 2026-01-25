@@ -28,23 +28,36 @@ export const usePublicProjectBySlug = () => {
           type,
           url,
           alt,
-          caption,
-          sort_order
+          caption
         )
       `)
       .eq('slug', slug)
-      .order('sort_order', { foreignTable: 'media', ascending: true })
       .single()
 
-    if (error) {
+    if (error || !data) {
       console.error('[Project slug]', error)
       return null
     }
-    console.log('data prioject slug: ', data)
+
 
     return {
-         ...data,
-      technologies: data.technologies.map(t => t.technology),
+      id: data.id,
+      title: data.title,
+      slug: data.slug!,
+      short_description: data.short_description,
+      description: data.description,
+      thumbnail_url: data.thumbnail_url,
+      demo_url: data.demo_url,
+      repo_url: data.repo_url,
+      tags: data.tags ?? [],
+      is_featured: data.is_featured ?? false,
+      published_at: data.published_at,
+
+      technologies: (data.technologies ?? [])
+        .map(t => t.technology)
+        .filter(Boolean),
+
+      media: data.media ?? [],
     }
   }
 

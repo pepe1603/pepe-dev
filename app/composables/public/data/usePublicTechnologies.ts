@@ -29,10 +29,10 @@ export const usePublicTechnologies = () => {
       .map(t => ({
         id: t.id!,
         name: t.name!,
-        icon: t.icon,
-        color: t.color,
-        website_url: t.website_url,
-        description: t.description
+        icon: t.icon ?? null,
+        color: t.color ?? null,
+        website_url: t.website_url ?? null,
+        description: t.description ?? null
       }))
   }
 

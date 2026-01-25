@@ -13,12 +13,15 @@ export interface TechnologyViewModel {
 export const useTechnologiesView = (
   technologies: PublicTechnologyItem[]
 ): TechnologyViewModel[] => {
-  return technologies.map(t => ({
-    id: t.id,
-    name: t.name,
-    icon: t.icon,
-    color: t.color,
-    websiteUrl: t.website_url,
-    description: t.description
-  }))
+  return technologies
+    .filter(t => t.id && t.name) // 🔹 eliminamos registros inválidos
+    .map(t => ({
+      id: t.id!,
+      name: t.name!,
+      icon: t.icon ?? null,
+      color: t.color ?? null,
+      websiteUrl: t.website_url ?? null,
+      description: t.description ?? null,
+    }))
 }
+

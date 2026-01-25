@@ -15,7 +15,6 @@ export interface SkillViewModel {
   name: string
   level: SkillLevel
   category: string
-  displayOrder: number
   levelColor: BadgeColor
 }
 
@@ -23,6 +22,8 @@ export interface SkillCategoryView {
   category: string
   skills: SkillViewModel[]
 }
+
+const DEFAULT_LEVEL: SkillLevel = 'basic'
 
 export const useSkillsView = (
   skills: PublicSkillItem[]
@@ -32,36 +33,41 @@ export const useSkillsView = (
       basic: 'neutral',
       intermediate: 'info',
       advanced: 'success',
-      expert: 'primary'
+      expert: 'primary',
     }
     return colors[level]
   }
 
-  const mapped: SkillViewModel[] = skills.map(skill => {
-    const rawCategory = skill.category?.trim() || 'Uncategorized'
+  // 🔹 Normalizamos id, name y level
+  const mapped: SkillViewModel[] = skills
+    .filter(skill => skill.id && skill.name) // eliminamos nulos
+    .map(skill => {
+      const rawCategory = skill.category?.trim() || 'Uncategorized'
+      const level: SkillLevel = skill.level ?? DEFAULT_LEVEL
 
-    return {
-      id: skill.id,
-      name: skill.name,
-      level: skill.level,
-      category: rawCategory,
-      displayOrder: skill.display_order,
-      levelColor: getLevelColor(skill.level)
-    }
-  })
+      return {
+        id: skill.id!,
+        name: skill.name!,
+        level,
+        category: rawCategory,
+        levelColor: getLevelColor(level),
+      }
+    })
 
+  // 🔹 Agrupamos por categoría
   const grouped = mapped.reduce<Record<string, SkillViewModel[]>>(
     (acc, skill) => {
-      const category = skill.category
-      acc[category] ??= []
-      acc[category].push(skill)
+      acc[skill.category] ??= []       // inicializa si es undefined
+      acc[skill.category]!.push(skill) // ahora TS sabe que no es undefined
       return acc
     },
     {}
   )
 
+
   return Object.entries(grouped).map(([category, skills]) => ({
     category,
-    skills
+    skills,
   }))
 }
+
