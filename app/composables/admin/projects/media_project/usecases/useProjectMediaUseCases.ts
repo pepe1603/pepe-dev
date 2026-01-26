@@ -3,6 +3,7 @@ import { useSupabaseClient } from '#imports'
 import type { ProjectMediaItemModel } from '../models/ProjectMediaItemModel'
 import type { ProjectMediaInsertModel } from '../models/ProjectMediaInsertModel'
 import type { Media } from '~/types'
+import type { MediaType } from '~/constants/mediaTypes'
 
 export const useProjectMediaUseCases = () => {
   const supabase = useSupabaseClient()
@@ -20,10 +21,8 @@ const createMedia = async (
       url: payload.url,
       alt: payload.alt ?? null,
       caption: payload.caption ?? null,
-      sort_order: payload.sortOrder ?? 0,
       type: payload.type,
       name: payload.name ?? 'project-media',
-      status: payload.status ?? 'draft',
     })
     .select()
     .single()
@@ -41,10 +40,8 @@ const createMedia = async (
     url: row.url,
     alt: row.alt,
     caption: row.caption,
-    sortOrder: row.sort_order,
-    type: row.type as ProjectMediaItemModel['type'],
-    name: row.name,
-    status: row.status,
+    type: row.type as MediaType,
+    name: row.name
   }
 }
 
@@ -61,10 +58,8 @@ const createMedia = async (
         .update({
         alt: payload.alt ?? null,
         caption: payload.caption ?? null,
-        sort_order: payload.sortOrder,
         type: payload.type,
         name: payload.name ?? undefined, 
-        status: payload.status,
         url: payload.url,
         })
         .eq('id', id)

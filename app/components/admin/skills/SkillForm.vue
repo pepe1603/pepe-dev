@@ -20,7 +20,6 @@ const localForm = reactive<SkillFormModel>({
   description: null,
   category: null,
   level: 'basic',
-  displayOrder: 0,
   status: 'draft',
 })
 
@@ -118,19 +117,6 @@ const onSubmit = () => {
             :items="levelOptions"
             option-label="label"
             option-value="value"
-            size="lg"
-            class="w-full"
-          />
-        </UFormField>
-
-        <UFormField
-          label="Display order"
-          name="displayOrder"
-          help="Lower numbers appear first"
-        >
-          <UInput
-            v-model.number="localForm.displayOrder"
-            type="number"
             size="lg"
             class="w-full"
           />

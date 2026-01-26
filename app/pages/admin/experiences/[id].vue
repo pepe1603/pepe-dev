@@ -42,7 +42,6 @@ const form = ref<ExperienceFormModel>({
   endDate: null,
   location: null,
   url: null,
-  sortOrder: 0,
   relatedProjectId: null,
   status: 'draft',
 })
@@ -84,12 +83,12 @@ const onSubmit = async (payload: ExperienceFormModel) => {
   if (!success.value) return
 
   setTimeout(() => {
-    router.push('/admin/experiences')
+    goBack()
   }, 1500)
 }
 
 const goBack = () => {
-  router.push('/admin/experiences/')
+  router.push('/admin/experiences')
 }
 </script>
 
@@ -154,12 +153,7 @@ const goBack = () => {
         class="my-6"
         @updated="status => (form.status = status)"
       />
-
-
       </UContainer>
-
-
-
     </div>
   </NuxtLayout>
 </div>

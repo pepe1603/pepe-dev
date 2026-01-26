@@ -1,14 +1,13 @@
 <script setup lang="ts" name="AdminProjectCard">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { Tables } from '~/types/database.types'
-type Project = Tables<'projects'>
+import type { ProjectFormModel } from '~/composables/admin/projects/models/ProjectFormModel'
 
 
 const router = useRouter()
 
 const props = defineProps<{
-  project: Project
+  project: ProjectFormModel 
   softDelete: (id: string) => Promise<void>
   restore: (id: string) => Promise<void>
   archive: (id: string) => Promise<void>
@@ -20,6 +19,10 @@ const targetAction = ref<null | 'delete' | 'archive'>(null)
 const goToEdit = (id: string) => router.push(`/admin/projects/${id}`)
 
 const handleAction = async () => {
+  if (!props.project.id) {
+    console.error('Project ID missing!')
+    return
+  }
   if (targetAction.value === 'delete') await props.softDelete(props.project.id)
   if (targetAction.value === 'archive') await props.archive(props.project.id)
   targetAction.value = null
@@ -34,13 +37,23 @@ const openPublicView = (slug: string, event: MouseEvent) => {
   event.preventDefault() // Evita que el NuxtLink se active
   window.open(`/projects/${slug}`, '_blank')
 }
+//format 25 ENer 2026: 
+const formatDate = (date: string | null) => {
+  if (!date) return '—'
+  return new Intl.DateTimeFormat('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(date))
+}
+
 </script>
 
 <template>
   <div class="group relative bg-elevated border border-accented rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/20 transition-all duration-300">
     <!-- FEATURED PIN -->
     <div
-      v-if="project.is_featured"
+      v-if="project.isFeatured"
       class="absolute top-3 right-3 z-10 bg-yellow-500/90 backdrop-blur-sm rounded-full p-1.5 shadow-lg"
     >
       <UIcon
@@ -63,8 +76,8 @@ const openPublicView = (slug: string, event: MouseEvent) => {
     <!-- THUMBNAIL -->
     <div class="relative h-48 bg-muted overflow-hidden">
       <img
-        v-if="project.thumbnail_url"
-        :src="project.thumbnail_url"
+        v-if="project.thumbnailUrl"
+        :src="project.thumbnailUrl"
         :alt="project.title"
         class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
@@ -84,7 +97,7 @@ const openPublicView = (slug: string, event: MouseEvent) => {
           @click="goToEdit(project.id)"
         />
         <UButton
-          v-if="!project.deleted_at"
+          v-if="project.status !== 'trashed'"
           icon="i-lucide-trash-2"
           color="error"
           size="md"
@@ -92,7 +105,7 @@ const openPublicView = (slug: string, event: MouseEvent) => {
           @click="openConfirm('delete')"
         />
         <UButton
-          v-if="!project.deleted_at && project.status !== 'archived'"
+          v-if="project.status !== 'archived' && project.status !== 'trashed'"
           icon="i-lucide-archive"
           color="neutral"
           size="md"
@@ -100,13 +113,14 @@ const openPublicView = (slug: string, event: MouseEvent) => {
           @click="openConfirm('archive')"
         />
         <UButton
-          v-else-if="project.deleted_at"
+          v-else-if="project.status === 'trashed'"
           icon="i-lucide-refresh-ccw"
           color="primary"
           size="md"
           variant="soft"
           @click="props.restore(project.id)"
         />
+
       </div>
     </div>
 
@@ -121,12 +135,24 @@ const openPublicView = (slug: string, event: MouseEvent) => {
         </p>
       </div>
       <p class="text-sm text-muted line-clamp-2 leading-relaxed">
-        {{ project.short_description }}
+        {{ project.shortDescription }}
       </p>
+
+      <!-- FECHAS -->
+      <div class="flex flex-wrap gap-4 text-xs text-muted mt-2">
+        <span>
+          Creado: {{ formatDate(project.createdAt) }}
+        </span>
+        <span v-if="project.updatedAt">
+          Actualizado: {{ formatDate(project.updatedAt) }}
+        </span>
+      </div>
     </div>
+
 
     <!-- INDICATORS -->
     <div class="px-5 pb-5 flex flex-wrap gap-2">
+
       <UBadge v-if="project.status === 'published'" color="success" variant="soft" size="md">
         <UIcon name="i-lucide-check-circle" class="w-3.5 h-3.5" />
         Publicado

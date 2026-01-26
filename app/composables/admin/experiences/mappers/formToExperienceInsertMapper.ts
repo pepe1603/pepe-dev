@@ -14,7 +14,6 @@ export const formToExperienceInsertMapper = (
 
   location: form.location ?? null,
   url: form.url ?? null,
-  sort_order: form.sortOrder ?? 0,
 
   related_project_id: form.relatedProjectId ?? null,
 

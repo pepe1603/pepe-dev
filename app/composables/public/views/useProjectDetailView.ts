@@ -43,21 +43,23 @@ export interface ProjectDetailView {
 export const useProjectDetailView = (
   project: PublicProjectDetail | null
 ): ProjectDetailView | null => {
-
   if (!project) return null
 
-  const mediaSorted = [...(project.media ?? [])].sort(
-    (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
-  )
+  // 🔑 Guard estructural
+  if (!project.id || !project.title || !project.slug) {
+    return null
+  }
+
+  const mediaList = project.media ?? []
 
   const coverSrc =
     project.thumbnail_url ??
-    mediaSorted[0]?.url ??
+    mediaList[0]?.url ??
     '/project-placeholder.png'
 
   return {
-    id: project.id ?? '',
-    title: project.title ?? 'Sin título',
+    id: project.id,
+    title: project.title,
 
     excerpt: project.short_description ?? '',
     description: project.description ?? '',
@@ -72,10 +74,10 @@ export const useProjectDetailView = (
 
     cover: {
       src: coverSrc,
-      alt: project.title ?? '',
+      alt: project.title,
     },
 
-    technologies: project.technologies.map(t => ({
+    technologies: (project.technologies ?? []).map(t => ({
       id: t.id,
       name: t.name,
       color: t.color,
@@ -83,10 +85,10 @@ export const useProjectDetailView = (
       website: t.website_url,
     })),
 
-    media: mediaSorted.map(m => ({
+    media: mediaList.map(m => ({
       id: m.id,
-      name: m.name,              
-      type: m.type as MediaType, 
+      name: m.name,
+      type: m.type as MediaType,
       src: m.url,
       alt: m.alt ?? project.title ?? '',
       caption: m.caption,

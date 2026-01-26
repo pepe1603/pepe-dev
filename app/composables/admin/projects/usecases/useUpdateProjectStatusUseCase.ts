@@ -1,7 +1,7 @@
 //// app/composables/admin/projects/usecases/useUpdateProjectStatusUseCase.ts
 import { ref } from 'vue'
 import { useSupabaseClient } from '#imports'
-import type { RecordStatus } from '../models/ProjectFormModel'
+import type { RecordStatus } from '~/types'
 
 export const useUpdateProjectStatusUseCase = () => {
   const supabase = useSupabaseClient()

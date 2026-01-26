@@ -22,6 +22,5 @@ export const formToProfileUpdateMapper = (
     avatar_url: form.avatarUrl || null,
     cv_url: form.cvUrl || null,
 
-    // ❌ NADA DE updated_at AQUÍ
   }
 }

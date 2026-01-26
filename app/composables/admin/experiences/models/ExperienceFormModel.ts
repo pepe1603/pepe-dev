@@ -1,11 +1,6 @@
 //app/composables/admin/experiences/models/ExperienceFormModel.ts
-import type { Database } from '~/types/database.types'
 
-export type ExperienceType =
-  Database['public']['Enums']['experience_type']
-
-export type RecordStatus =
-  Database['public']['Enums']['record_status']
+import type { ExperienceType, RecordStatus } from "~/types"
 
 export interface ExperienceFormModel {
   id?: string
@@ -23,7 +18,6 @@ export interface ExperienceFormModel {
   // meta
   location?: string | null
   url?: string | null
-  sortOrder?: number
 
   // relations
   relatedProjectId?: string | null
@@ -31,3 +25,4 @@ export interface ExperienceFormModel {
   // domain
   status: RecordStatus
 }
+

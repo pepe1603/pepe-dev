@@ -15,10 +15,8 @@ export const usePublicSkills = () => {
         id,
         name,
         level,
-        category,
-        display_order
+        category
       `)
-      .order('display_order', { ascending: true })
       .order('name', { ascending: true })
 
     if (error || !data) {
@@ -33,8 +31,7 @@ export const usePublicSkills = () => {
         id: skill.id!,
         name: skill.name!,
         level: skill.level ?? DEFAULT_LEVEL,
-        category: skill.category,
-        display_order: skill.display_order ?? 0
+        category: skill.category
       }))
   }
 

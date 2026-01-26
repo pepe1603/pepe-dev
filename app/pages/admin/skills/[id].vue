@@ -36,7 +36,6 @@ const form = ref<SkillFormModel>({
   description: null,
   category: null,
   level: 'basic',
-  displayOrder: 0,
   status: 'draft',
 })
 const isLoadingSkill = ref(false)
@@ -70,7 +69,7 @@ const onSubmit = async (payload: SkillFormModel) => {
   if (!success.value) return
 
     setTimeout(() => {
-    router.push('/admin/skills')
+    goBack()
   }, 1500)
 }
 

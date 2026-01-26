@@ -19,7 +19,6 @@ export const useAdminExperiencesQuery = () => {
     const { data, error: dbError } = await supabase
       .from('experiences')
       .select('*')
-      .order('sort_order', { ascending: true })
       .order('start_date', { ascending: false })
 
     if (dbError) {

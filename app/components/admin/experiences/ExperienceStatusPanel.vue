@@ -1,7 +1,7 @@
 <script setup lang="ts" name="ExperienceStatusPanel">
 import { computed, ref, watch } from 'vue'
-import type { RecordStatus } from '~/composables/admin/experiences/models/ExperienceFormModel'
 import { useUpdateExperienceStatusUseCase } from '~/composables/admin/experiences/usecases/useUpdateExperienceStatusUseCase'
+import type { RecordStatus } from '~/types';
 
 const props = defineProps<{
   id: string

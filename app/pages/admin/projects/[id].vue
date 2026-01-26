@@ -12,6 +12,7 @@ import { useProjectThumbnailSync } from '~/composables/admin/projects/useProject
 import ProjectForm from '~/components/admin/projects/ProjectForm.vue'
 import ProjectStatusPanel from '~/components/admin/projects/ProjectStatusPanel.vue'
 import ProjectMediaPanel from '~/components/admin/projects/media_project/ProjectMediaPanel.vue'
+import type { ProjectCreateModel } from '~/composables/admin/projects/models/ProjectCreateModel'
 
 
 definePageMeta({
@@ -54,19 +55,25 @@ watchEffect(() => {
 /**
  * Form state
  */
-const form = ref<ProjectFormModel>({
-  title: '',
-  slug: '',
-  shortDescription: '',
-  description: '',
-  subtitle: null,
-  repositoryUrl: null,
-  demoUrl: null,
-  thumbnailUrl: null,
-  isFeatured: false,
-  tags: [],
-  status: 'draft',
-})
+
+const form = ref<ProjectCreateModel | ProjectFormModel>(
+  isNew.value
+    ? {
+        title: '',
+        slug: '',
+        shortDescription: '',
+        description: '',
+        subtitle: null,
+        repositoryUrl: null,
+        demoUrl: null,
+        thumbnailUrl: null,
+        isFeatured: false,
+        tags: [],
+        status: 'draft',
+      }
+    : {} as ProjectFormModel // luego se llenará con fetchProject
+)
+
 
 /**
  * Loading state
@@ -104,7 +111,7 @@ const fetchProject = async () => {
     technologyIds: data.project_technologies.map(
       pt => pt.technology_id
     ),
-  }
+  } as ProjectFormModel
 
 }
 
@@ -160,6 +167,11 @@ const onSubmit = async (payload: ProjectFormModel) => {
 const goBack = () => {
   router.push('/admin/projects')
 }
+
+const editForm = computed<ProjectFormModel | null>(() => 
+  !isNew.value ? (form.value as ProjectFormModel) : null
+)
+
 
 
 </script>
@@ -290,8 +302,8 @@ const goBack = () => {
               class="my-4"
             />            
               <ProjectStatusPanel
-                v-if="!isNew"
-                :id="form.id!"
+                 v-if="editForm"
+                :id="editForm.id as string"
                 :status="form.status"
                 class="my-6"
                 @updated="status => (form.status = status)"
@@ -300,7 +312,7 @@ const goBack = () => {
               <!-- Project Media -->
               <ProjectMediaPanel
                 v-if="!isNew"
-                :project-id="form.id!"
+                :project-id="editForm?.id as string"
                 :project-slug="form.slug"
                 class="my-8"
               />

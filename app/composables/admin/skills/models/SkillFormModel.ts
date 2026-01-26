@@ -1,9 +1,5 @@
 //app/composables/admin/skills/models/SkillFormModel.ts
-import type { Database, Enums } from '~/types/database.types'
-
-export type RecordStatus =
-  Database['public']['Enums']['record_status']
-
+import type { RecordStatus, SkillLevel } from '~/types'
 
 export interface SkillFormModel {
   id?: string
@@ -14,9 +10,8 @@ export interface SkillFormModel {
   category: string | null
 
   // domain
-  level: Enums<'skill_level'>
-  displayOrder: number
+  level: SkillLevel
 
   // status
-  status: Enums<'record_status'>
+  status: RecordStatus
 }

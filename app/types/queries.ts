@@ -7,6 +7,7 @@ import type {
   Technology,
   Media,
   SkillLevel,
+  ExperienceType,
 } from './domain'
 
 /* =========================
@@ -14,30 +15,32 @@ import type {
 ========================= */
 
 // Perfil público
-export type PublicProfileQuery = Pick<
-  PublicProfile,
-  | 'id'
-  | 'full_name'
-  | 'headline'
-  | 'bio'
-  | 'avatar_url'
-  | 'github_url'
-  | 'linkedin_url'
-  | 'twitter_url'
-  | 'website_url'
->
+export type PublicProfileQuery = {
+          avatar_url: string | null
+          bio: string | null
+          email_public: string | null
+          full_name: string | null
+          github_url: string | null
+          headline: string | null
+          id: string | null
+          linkedin_url: string | null
+          location: string | null
+          cv_url: string | null
+          twitter_url: string | null
+          website_url: string | null
+}
 
 // Proyecto público (lista)
-export type PublicProjectListItem = Pick<
-  PublicProject,
-  | 'id'
-  | 'title'
-  | 'slug'
-  | 'short_description'
-  | 'thumbnail_url'
-  | 'is_featured'
-  | 'published_at'
->
+export type PublicProjectListItem = {
+  id: string | null
+  title: string | null
+  slug: string | null
+  short_description: string | null
+  thumbnail_url: string | null
+  is_featured: boolean | null
+  published_at: string | null
+}
+
 
 // Proyecto público (detalle)
 export type PublicProjectDetail = PublicProjectListItem & {
@@ -45,9 +48,11 @@ export type PublicProjectDetail = PublicProjectListItem & {
   demo_url: string | null
   repo_url: string | null
   tags: string[] | null
-  technologies: Technology[]
-  media: PublicMediaItem[]
+
+  technologies: Technology[] | null
+  media: PublicMediaItem[] | null
 }
+
 
 
 export type PublicMediaItem = {
@@ -57,35 +62,35 @@ export type PublicMediaItem = {
   url: string
   alt: string | null
   caption: string | null
-  sort_order: number
 }
 
 
 // Skills
 export type PublicSkillItem = {
-  id: string
-  name: string
-  level: SkillLevel
+  id: string | null
+  name: string | null
+  level: SkillLevel | null
   category: string | null
-  display_order: number
 }
 
+
 // Experiences
-export type PublicExperienceItem = Pick<
-  PublicExperience,
-  | 'id'
-  | 'title'
-  | 'subtitle'
-  | 'type'
-  | 'start_date'
-  | 'end_date'
-  | 'location'
-  | 'url'
-  | 'project_id'
-  | 'project_title'
-  | 'project_slug'
-  | 'project_thumbnail_url'
->
+export type PublicExperienceItem = {
+  id: string | null
+  title: string | null
+  subtitle: string | null
+  type: ExperienceType | null
+  start_date: string | null
+  end_date: string | null
+  location: string | null
+  url: string | null
+  project_id: string | null
+  project_title: string | null
+  project_slug: string | null
+  project_thumbnail_url: string | null
+}
+
+
 // Technologies (public)
 export type PublicTechnologyItem = {
   id: string
@@ -95,8 +100,6 @@ export type PublicTechnologyItem = {
   website_url: string | null
   description: string | null
 }
-
-
 
 // Re-exportar enums
 export type { SkillLevel } from './domain'

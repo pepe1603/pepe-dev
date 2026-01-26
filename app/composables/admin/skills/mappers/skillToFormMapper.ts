@@ -15,6 +15,8 @@ export const skillToFormMapper = (
 
   level: skill.level,
   displayOrder: skill.display_order,
+  /**Property 'display_order' does not exist on type '{ category: string | null; created_at: string; description: string | null; id: string; level: "basic" | "intermediate" | "advanced" | "expert"; name: string; published_at: string | null; status: "draft" | ... 2 more ... | "trashed"; updated_at: string | null; }'.ts(2339)
+any */
 
   status: skill.status,
 })

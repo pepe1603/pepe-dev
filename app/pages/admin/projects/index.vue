@@ -1,11 +1,13 @@
+<!-- app/pages/admin/projects/index-vue -->
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AdminProjectCard from '~/components/admin/projects/AdminProjectCard.vue'
 import { useAdminProjectsQuery } from '~/composables/admin/projects/queries/useAdminProjectsQuery'
 import { useAdminProjectsMutations } from '~/composables/admin/projects/queries/useAdminProjectsMutations'
 import type { TableColumn } from '@nuxt/ui'
-import type { Project } from '~/types'
+import type { ProjectFormModel } from '~/composables/admin/projects/models/ProjectFormModel'
+import type { RecordStatus } from '~/types'
 
 definePageMeta({
   layout: false,
@@ -16,21 +18,50 @@ definePageMeta({
 const router = useRouter()
 const { projects, loading, error } = useAdminProjectsQuery()
 const { softDelete, restore, archive } = useAdminProjectsMutations(projects)
+
 const toast = useToast()
 const UButton = resolveComponent('UButton')
 
-const goToCreate = () => {
-  router.push('/admin/projects/new')
+const goToCreate = () => router.push('/admin/projects/new')
+
+// -------------------------------------------------
+// AdminProject: solo los campos que necesitamos
+// -------------------------------------------------
+type AdminProject = {
+  id: string
+  status: RecordStatus
+  updatedAt: string | null
 }
 
-const publishedCount = () => projects.value.filter(p => p.status === 'published').length
-const draftCount = () => projects.value.filter(p => p.status === 'draft').length
-const archivedCount = () => projects.value.filter(p => p.status === 'archived').length
+const toAdminProject = (p: ProjectFormModel): AdminProject => ({
+  id: p.id!,
+  status: p.status,
+  updatedAt: p.updatedAt,
+})
 
-const deletedProjects = computed(() =>
-  projects.value.filter(p => p.status === 'trashed')
+// -------------------------------------------------
+// Computed con tipado seguro
+// -------------------------------------------------
+const adminProjects = computed<AdminProject[]>(() =>
+  projects.value.map(toAdminProject)
 )
 
+const publishedCount = () =>
+  adminProjects.value.filter(p => p.status === 'published').length
+
+const draftCount = () =>
+  adminProjects.value.filter(p => p.status === 'draft').length
+
+const archivedCount = () =>
+  adminProjects.value.filter(p => p.status === 'archived').length
+
+const deletedProjects = computed(() =>
+  adminProjects.value.filter(p => p.status === 'trashed')
+)
+
+// -------------------------------------------------
+// Modal de eliminación permanente
+// -------------------------------------------------
 const showDeleteModal = ref(false)
 const projectToDelete = ref<null | string>(null)
 
@@ -48,7 +79,6 @@ const handlePermanentDelete = async () => {
       .eq('id', projectToDelete.value)
     if (error) throw error
 
-    // Actualizamos localmente
     projects.value = projects.value.filter(p => p.id !== projectToDelete.value)
     projectToDelete.value = null
     showDeleteModal.value = false
@@ -59,26 +89,27 @@ const handlePermanentDelete = async () => {
   }
 }
 
-// Definición correcta de columnas para UTable
-const columns: TableColumn<Project>[] = [
-  {
-    accessorKey: 'title',
-    header: 'Título',
-    cell: ({ row }) => row.getValue('title')
-  },
+// -------------------------------------------------
+// Columnas para UTable
+// -------------------------------------------------
+const adminColumns: TableColumn<AdminProject>[] = [
   {
     accessorKey: 'status',
     header: 'Estado',
-    cell: ({ row }) => {
-      const status = row.getValue('status') as string
-      return h('span', { class: 'capitalize text-muted' }, status === 'trashed' ? 'Eliminado' : status)
-    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Actualizado',
+    cell: ({ row }) =>
+      row.getValue('updatedAt')
+        ? new Date(row.getValue('updatedAt') as string).toLocaleDateString()
+        : '—'
   },
   {
     id: 'actions',
     header: 'Acciones',
-    cell: ({ row }) => {
-      return h('div', { class: 'flex gap-2' }, [
+    cell: ({ row }) =>
+      h('div', { class: 'flex gap-2' }, [
         h(UButton, {
           color: 'primary',
           size: 'sm',
@@ -90,14 +121,14 @@ const columns: TableColumn<Project>[] = [
           color: 'error',
           size: 'sm',
           icon: 'i-lucide-trash-2',
-          label: 'Eliminar permanentemente',
+          label: 'Eliminar',
           onClick: () => confirmPermanentDelete(row.original.id)
         })
       ])
-    }
   }
 ]
 </script>
+
 
 <template>
   <div>
@@ -152,14 +183,16 @@ const columns: TableColumn<Project>[] = [
         v-else
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <AdminProjectCard
-          v-for="project in projects.filter(p => p.status !== 'trashed')"
-          :key="project.id"
-          :project="project"
-          :soft-delete="softDelete"
-          :restore="restore"
-          :archive="archive"
-        />
+      <AdminProjectCard
+        v-for="project in projects.filter(p => p.status !== 'trashed')"
+        :key="project.id"
+        :project="project"
+        :soft-delete="softDelete"
+        :restore="restore"
+        :archive="archive"
+      />
+
+
       </div>
 
       <!-- INDICADORES con contadores -->
@@ -199,7 +232,7 @@ const columns: TableColumn<Project>[] = [
 
         <div class="border border-accented rounded-lg overflow-hidden bg-elevated">
           <UTable
-            :columns="columns"
+            :columns="adminColumns"
             :data="deletedProjects"
             class="flex-1"
             :ui="{

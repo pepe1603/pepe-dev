@@ -1,7 +1,7 @@
 <script setup lang="ts" name="SkillStatusPanel">
 import { computed, ref, watch } from 'vue'
-import type { RecordStatus } from '~/composables/admin/skills/models/SkillFormModel'
 import { useUpdateSkillStatusUseCase } from '~/composables/admin/skills/usecases/useUpdateSkillStatusUseCase';
+import type { RecordStatus } from '~/types';
 
 const props = defineProps<{
   id: string

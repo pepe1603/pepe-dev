@@ -1,14 +1,12 @@
 ////app/composables/admin/skills/queries/ussseADminSkillQuery.ts
 import { ref, onMounted } from 'vue'
 import { useSupabaseClient } from '#imports'
-import type { Tables } from '~/types/database.types'
-
-type SkillRow = Tables<'skills'>
+import type { Skill } from '~/types'
 
 export const useAdminSkillsQuery = () => {
   const supabase = useSupabaseClient()
 
-  const skills = ref<SkillRow[]>([])
+  const skills = ref<Skill[]>([])
   const loading = ref(true)
   const error = ref<string | null>(null)
 
@@ -19,7 +17,8 @@ export const useAdminSkillsQuery = () => {
     const { data, error: dbError } = await supabase
       .from('skills')
       .select('*')
-      .order('display_order', { ascending: true })
+      .order('name', { ascending: true })
+
 
 
     if (dbError) {

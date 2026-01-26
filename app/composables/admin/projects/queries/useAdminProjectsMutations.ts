@@ -1,102 +1,58 @@
-//app/composables/admin/projects/queries/useAdminProjectsMutations
-import type { Ref } from 'vue'
-import type { Tables } from '~/types/database.types'
+// app/composables/admin/projects/queries/useAdminProjectsMutations.ts
 import { useSupabaseClient } from '#imports'
+import type { RecordStatus } from '~/types'
+import type { Ref } from 'vue'
+import type { ProjectFormModel } from '../models/ProjectFormModel'
 
-type ProjectRow = Tables<'projects'>
-
-export const useAdminProjectsMutations = (projects: Ref<ProjectRow[]>) => {
+export const useAdminProjectsMutations = (
+  projects: Ref<ProjectFormModel[]>
+) => {
   const supabase = useSupabaseClient()
-
   const toast = useToast()
 
-  const softDelete = async (id: string) => {
+  const updateStatus = async (
+    id: string,
+    status: RecordStatus,
+    successMsg: string
+  ) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('projects')
-        .update({ deleted_at: new Date().toISOString(), status: 'trashed' })
+        .update({ status })
         .eq('id', id)
+        .select('id, status, updated_at')
+        .single()
+
       if (error) throw error
 
+      // ✅ Actualizamos el proyecto localmente
       const project = projects.value.find(p => p.id === id)
-      if (project) {
-        project.deleted_at = new Date().toISOString()
-        project.status = 'trashed'
+      if (project && data) {
+        project.status = data.status
+        project.updatedAt = data.updated_at
       }
 
       toast.add({
-        description: 'Proyecto eliminado correctamente',
+        title: successMsg,
         icon: 'i-lucide-shield-check',
-        color: 'success'
+        color: 'success',
       })
     } catch (err: any) {
-      console.error('Error soft deleting proyect:', err.message || err)
+      console.error(err)
       toast.add({
-        description:
-          'Upps!, algo fallo, Error al eliminar proyecto',
+        description: 'Upps!, algo falló al actualizar el proyecto',
         icon: 'i-lucide-shield-x',
         color: 'error',
       })
     }
   }
 
-  const restore = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('projects')
-        .update({ deleted_at: null, status: 'draft' })
-        .eq('id', id)
-      if (error) throw error
-
-      const project = projects.value.find(p => p.id === id)
-      if (project) {
-        project.deleted_at = null
-        project.status = 'draft'
-      }
-
-      toast.add({
-      title: 'Proyecto restaurado correctamente',
-      icon: 'i-lucide-shield-check',
-      color: 'success',
-    })
-
-    } catch (err: any) {
-      console.error('Error restoring project:', err.message || err)
-      toast.add({
-        description:
-          'Upps!, algo fallo, Error al restaurar el proyecto',
-        icon: 'i-lucide-shield-x',
-        color: 'error',
-      })
-    }
+  return {
+    softDelete: (id: string) =>
+      updateStatus(id, 'trashed', 'Proyecto eliminado correctamente'),
+    restore: (id: string) =>
+      updateStatus(id, 'draft', 'Proyecto restaurado correctamente'),
+    archive: (id: string) =>
+      updateStatus(id, 'archived', 'Proyecto archivado correctamente'),
   }
-
-  const archive = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('projects')
-        .update({ status: 'archived' })
-        .eq('id', id)
-      if (error) throw error
-
-      const project = projects.value.find(p => p.id === id)
-      if (project) project.status = 'archived'
-
-      toast.add({
-      title: 'Proyecto archivado correctamente',
-      icon: 'i-lucide-shield-check',
-      color: 'success',
-    })
-    } catch (err: any) {
-      console.error('Error archiving project:', err.message || err)
-      toast.add({
-        description:
-          'Upps!, algo fallo, Error al archivar proyecto',
-        icon: 'i-lucide-shield-x',
-        color: 'error',
-      })
-    }
-  }
-
-  return { softDelete, restore, archive }
 }

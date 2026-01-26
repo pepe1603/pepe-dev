@@ -1,13 +1,9 @@
 // app/composables/admin/projects/models/ProjectFormModel.ts
 
-import type { Database } from "~/types"
-
-
-export type RecordStatus =
-  Database['public']['Enums']['record_status']
+import type { RecordStatus } from "~/types"
 
 export interface ProjectFormModel {
-  id?: string
+  id: string | undefined
 
   // core
   title: string
@@ -24,11 +20,14 @@ export interface ProjectFormModel {
   thumbnailUrl: string | null
 
   // domain
-  status: 'draft' | 'published' | 'archived' | 'trashed'
+  status: RecordStatus
   isFeatured?: boolean
   tags?: string[]
 
   // relations
   technologyIds?: string[]
   relatedExperienceId?: string | null
+
+  createdAt?: string | null | undefined
+  updatedAt?: string | null | undefined
 }

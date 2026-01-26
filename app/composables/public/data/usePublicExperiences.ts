@@ -21,7 +21,6 @@ export const usePublicExperiences = () => {
         project_slug,
         project_thumbnail_url
       `)
-      .order('sort_order', { ascending: true, nullsFirst: false })
       .order('start_date', { ascending: false })
 
     if (error) {

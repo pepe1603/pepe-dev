@@ -19,23 +19,22 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
     loading.value = true
     error.value = null
 
-    const { data, error: supabaseError } = await supabase
-      .from('media')
-      .select(
-        `
-        id,
-        project_id,
-        url,
-        alt,
-        caption,
-        sort_order,
-        type,
-        name,
-        status
+  const { data, error: supabaseError } = await supabase
+    .from('media')
+    .select(
       `
-      )
-      .eq('project_id', projectId)
-      .order('sort_order', { ascending: true })
+      id,
+      project_id,
+      url,
+      alt,
+      caption,
+      type,
+      name,
+      created_at,
+      updated_at
+    `
+    )
+    .eq('project_id', projectId)
 
     loading.value = false
 
@@ -52,10 +51,8 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
         url: row.url,
         alt: row.alt,
         caption: row.caption,
-        sortOrder: row.sort_order,
         type: row.type as MediaType,
-        name: row.name,
-        status: row.status,
+        name: row.name
       })
     )
   }

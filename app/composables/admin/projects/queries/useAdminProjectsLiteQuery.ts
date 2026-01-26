@@ -5,7 +5,7 @@ import type { Tables } from '~/types/database.types'
 
 type ProjectLite = Pick<
   Tables<'projects'>,
-  'id' | 'title' | 'thumbnail_url' | 'status'
+  'id' | 'title' | 'thumbnail_url' | 'status' | 'created_at' | 'updated_at'
 >
 
 export const useAdminProjectsLiteQuery = () => {
@@ -21,7 +21,7 @@ export const useAdminProjectsLiteQuery = () => {
 
     const { data, error: dbError } = await supabase
       .from('projects')
-      .select('id, title, thumbnail_url, status')
+      .select('id, title, thumbnail_url, status, created_at, updated_at')
       .neq('status', 'trashed')
       .order('created_at', { ascending: false })
 

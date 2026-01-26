@@ -1,11 +1,10 @@
 //app/composables/admin/experiences/mappers/experienceToFormMapper.ts
-import type { Tables } from '~/types/database.types'
+import type { Experience } from '~/types'
 import type { ExperienceFormModel } from '../models/ExperienceFormModel'
 
-type ExperienceRow = Tables<'experiences'>
 
 export const experienceToFormMapper = (
-  row: ExperienceRow
+  row: Experience
 ): ExperienceFormModel => ({
   id: row.id,
 
@@ -19,7 +18,6 @@ export const experienceToFormMapper = (
 
   location: row.location,
   url: row.url,
-  sortOrder: row.sort_order,
 
   relatedProjectId: row.related_project_id,
   status: row.status,

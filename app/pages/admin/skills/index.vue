@@ -52,10 +52,10 @@ const sortedSkills = computed(() => {
     const catB = b.category ?? 'zzz'
 
     if (catA !== catB) return catA.localeCompare(catB)
-
-    return (a.display_order ?? 0) - (b.display_order ?? 0)
+    return a.name.localeCompare(b.name)
   })
 })
+
 
 /* -------- Columns -------- */
 const columns: TableColumn<Skill>[] = [
@@ -90,12 +90,6 @@ const columns: TableColumn<Skill>[] = [
     }
   },
   {
-    accessorKey: 'display_order',
-    header: 'Orden',
-    cell: ({ row }) =>
-      h('span', { class: 'text-muted text-sm' }, row.original.display_order)
-  },
-  {
     accessorKey: 'status',
     header: 'Estado',
     cell: ({ row }) => {
@@ -121,7 +115,7 @@ const columns: TableColumn<Skill>[] = [
         size: 'xs',
         variant: 'link',
         icon: 'i-lucide-pencil',
-        onClick: () => router.push(`/admin/skills/${row.original.id}`)
+        onClick: () => goToEdit(row.original.id)
       }),
       h(UButton, {
         size: 'xs',
@@ -135,8 +129,9 @@ const columns: TableColumn<Skill>[] = [
 
 ]
 
-const goToCreate = () => {
-  router.push('/admin/skills/new')
+const goToCreate = () => router.push('/admin/skills/new')
+const goToEdit = (id: string) => {
+  router.push(`/admin/skills/${id}`)
 }
 
 /** Modal state */
@@ -238,7 +233,7 @@ const confirmDelete = async () => {
           :data="sortedSkills"
           :columns="columns"
           :ui="{ th: 'bg-accented text-left', td: 'py-3' }"
-          @row-click="row => router.push(`/admin/skills/${row.id}`)"
+          @row-click="goToEdit"
         />
 
       </div>

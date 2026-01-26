@@ -17,9 +17,13 @@ export const usePublicProfile = () => {
           github_url,
           linkedin_url,
           twitter_url,
-          website_url
+          website_url,
+          email_public,
+          location,
+          cv_url
         `)
         .single()
+
 
       if (error) {
         console.error('[Profile]', error)

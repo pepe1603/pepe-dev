@@ -63,6 +63,7 @@ const {
       <ProfileHero
         v-else-if="profile"
         v-bind="profile"
+        :fields="['headline','bio','location','email','links','cv']"
       />
 
     </section>

@@ -1,3 +1,4 @@
+<!-- //app/pages/admin/technologies/index.vue -->
 <script setup lang="ts">
 import { h } from 'vue'
 import { useRouter } from 'vue-router'
@@ -203,7 +204,7 @@ const confirmDelete = async () => {
           th: 'bg-accented text-left',
           td: 'py-3'
         }"
-        @row-click="row => router.push(`/admin/technologies/${row.id}`)"
+        @row-click="goToEdit"
       />
 
     </div>

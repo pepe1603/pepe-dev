@@ -1,11 +1,10 @@
 // app/composables/admin/projects/mappers/projectToFormMapper.ts
-import type { Tables } from '~/types/database.types'
+import type { Project } from '~/types'
 import type { ProjectFormModel } from '../models/ProjectFormModel'
 
-type ProjectRow = Tables<'projects'>
 
 export const projectToFormMapper = (
-  project: ProjectRow
+  project: Project
 ): ProjectFormModel => ({
   id: project.id,
 
@@ -13,14 +12,18 @@ export const projectToFormMapper = (
   slug: project.slug,
   shortDescription: project.short_description,
   description: project.description,
-  subtitle: project.subtitle,
+  subtitle: project.subtitle ?? null,
 
-  repositoryUrl: project.repo_url,
-  demoUrl: project.demo_url,
+  repositoryUrl: project.repo_url ?? null,
+  demoUrl: project.demo_url ?? null,
 
-  thumbnailUrl: project.thumbnail_url,
+  thumbnailUrl: project.thumbnail_url ?? null,
 
   status: project.status,
   isFeatured: project.is_featured ?? false,
   tags: project.tags ?? [],
+
+  // Para UI solamente
+  createdAt: project.created_at,
+  updatedAt: project.updated_at,
 })
