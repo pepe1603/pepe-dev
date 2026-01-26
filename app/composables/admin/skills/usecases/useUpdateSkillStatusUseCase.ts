@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { useSupabaseClient } from '#imports'
+import type { RecordStatus } from '~/types'
 
 export const useUpdateSkillStatusUseCase = () => {
   const supabase = useSupabaseClient()
@@ -8,7 +9,11 @@ export const useUpdateSkillStatusUseCase = () => {
   const error = ref<string | null>(null)
   const success = ref(false)
 
-  const updateStatus = async (id: string, status: 'draft' | 'published' | 'archived') => {
+  const updateStatus = async (
+    id: string,
+    status: RecordStatus
+
+  ) => {
     loading.value = true
     error.value = null
     success.value = false

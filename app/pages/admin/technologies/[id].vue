@@ -1,3 +1,4 @@
+<!-- //app/pages/admin/technologies/[id].vue -->
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -23,7 +24,8 @@ const supabase = useSupabaseClient()
 const isNew = computed(() => route.params.id === 'new')
 
 const pageTitle = computed(() =>
-  isNew.value ? 'Create Tech' : 'Edit Tech'
+  isNew.value ? 'Create Technology' : 'Edit Technology'
+
 )
 
 const pageDescription = computed(() =>
@@ -78,7 +80,7 @@ const onSubmit = async (payload: TechnologyFormModel) => {
   if (!success.value) return
 
   setTimeout(() => {
-    router.push('/admin/technologies')
+    goBack()
   }, 1500)
 
 }

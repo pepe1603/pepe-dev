@@ -20,10 +20,9 @@ export const useSyncProjectTechnologiesUseCase = () => {
     // 2. Insert new relations
     if (technologyIds.length === 0) return
 
-    const rows = technologyIds.map((techId, index) => ({
+    const rows = technologyIds.map((techId) => ({
       project_id: projectId,
       technology_id: techId,
-      sort_order: index,
     }))
 
     await supabase

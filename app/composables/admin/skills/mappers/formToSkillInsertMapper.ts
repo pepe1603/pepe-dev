@@ -9,7 +9,5 @@ export const formToSkillInsertMapper = (
   category: form.category ?? null,
 
   level: form.level,
-  display_order: form.displayOrder,
-
   status: 'draft' as const, // siempre draft al crear
 })

@@ -89,9 +89,7 @@ const onUploaded = async (
       name: payload.name,
       type: payload.type,
       alt: null,
-      caption: null,
-      sortOrder: mediaItems.value.length,
-      status: 'draft',
+      caption: null
     })
 
     mediaItems.value.push(newItem)
@@ -117,9 +115,7 @@ const saveItem = async (item: ProjectMediaItemModel) => {
     await updateMedia(item.id, {
       alt: item.alt,
       caption: item.caption,
-      type: item.type,
-      status: item.status,
-      sortOrder: item.sortOrder,
+      type: item.type
     })
 
     editingItemId.value = null

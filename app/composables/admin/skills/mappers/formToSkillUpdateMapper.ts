@@ -10,7 +10,5 @@ export const formToSkillUpdateMapper = (
   category: form.category ?? null,
 
   level: form.level,
-  display_order: form.displayOrder,
-
   status: form.status,
 })

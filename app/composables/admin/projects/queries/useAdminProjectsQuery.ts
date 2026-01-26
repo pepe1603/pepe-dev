@@ -1,16 +1,34 @@
 // app/composables/admin/projects/queries/useAdminProjectsQuery.ts
 import { ref, onMounted } from 'vue'
 import { useSupabaseClient } from '#imports'
-import type { Tables } from '~/types/database.types'
-
-type ProjectRow = Tables<'projects'>
+import type { ProjectFormModel } from '../models/ProjectFormModel'
 
 export const useAdminProjectsQuery = () => {
   const supabase = useSupabaseClient()
 
-  const projects = ref<ProjectRow[]>([])
+  // ✅ Tipamos explícitamente como ProjectFormModel[]
+  const projects = ref<ProjectFormModel[]>([])
   const loading = ref(true)
   const error = ref<string | null>(null)
+
+  const normalizeProject = (p: any): ProjectFormModel => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    shortDescription: p.short_description,
+    description: p.description,
+    subtitle: p.subtitle ?? null,
+    repositoryUrl: p.repo_url ?? null,
+    demoUrl: p.demo_url ?? null,
+    thumbnailUrl: p.thumbnail_url ?? null,
+    status: p.status,
+    isFeatured: p.is_featured ?? false,
+    tags: p.tags ?? [],
+    technologyIds: p.technology_ids ?? [],
+    relatedExperienceId: p.related_experience_id ?? null,
+    createdAt: p.created_at,
+    updatedAt: p.updated_at,
+  })
 
   const fetchProjects = async () => {
     loading.value = true
@@ -27,7 +45,8 @@ export const useAdminProjectsQuery = () => {
       return
     }
 
-    projects.value = data ?? []
+    // ✅ Normalizamos al tipo plano ProjectFormModel
+    projects.value = (data ?? []).map(normalizeProject)
     loading.value = false
   }
 

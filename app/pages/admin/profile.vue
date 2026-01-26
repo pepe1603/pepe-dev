@@ -1,3 +1,4 @@
+<!-- app/pages/admin/prrofiles.vue -->
 <script setup lang="ts">
 import type { ProfileFormModel } from '~/composables/admin/profile/models/ProfileFormModel'
 import { useAdminProfileQuery } from '~/composables/admin/profile/queries/useAdminProfileQuery'
@@ -658,7 +659,11 @@ const cvFileLabel = computed(() =>
               color="neutral"
               variant="outline"
               icon="i-heroicons-arrow-path"
-              @onclick="() => form && originalForm && Object.assign(form, cloneForm(originalForm))"
+              @click="() => {
+                if (form && originalForm) {
+                  Object.assign(form, cloneForm(originalForm))
+                }
+              }"
             >
               Descartar
             </UButton>
