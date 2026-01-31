@@ -316,7 +316,7 @@ const onSubmit = () => {
           />
         </UFormField>
 
-        <!-- Status -->
+        <!-- Status
         <UFormField
         v-if="isEditMode"
           label="Status"
@@ -334,7 +334,7 @@ const onSubmit = () => {
 
 
 
-          <!-- Visual indicators -->
+           Visual indicators
           <div class="flex gap-2 mt-2">
             <UBadge
               v-for="option in statusOptions"
@@ -347,7 +347,7 @@ const onSubmit = () => {
               {{ option.label }}
             </UBadge>
           </div>
-        </UFormField>
+        </UFormField> -->
 
       </div>
     </div>

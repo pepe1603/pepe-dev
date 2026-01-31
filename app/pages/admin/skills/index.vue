@@ -6,12 +6,13 @@ import type { TableColumn } from '@nuxt/ui'
 import { useAdminSkillsQuery } from '~/composables/admin/skills/queries/useAdminSkillsQuery'
 import { useDeleteSkillUseCase } from '~/composables/admin/skills/usecases/useDeleteSkillUseCase'
 import type { Tables } from '~/types/database.types'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 type Skill = Tables<'skills'>
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
   name: 'skills'
 })
 
@@ -176,7 +177,7 @@ const confirmDelete = async () => {
           size="sm"
           @click="goToCreate"
         >
-          Nueva skill
+          Agregar
         </UButton>
       </template>
 
@@ -188,15 +189,30 @@ const confirmDelete = async () => {
         description="Las skills representan capacidades profesionales (por ejemplo: Arquitectura Frontend, Testing, Clean Code). No representan herramientas ni frameworks."
       />
 
-
       <!-- Loading -->
-      <div
-        v-if="loading"
-        class="flex flex-col items-center gap-2 py-16 text-gray-500"
-      >
-        <UIcon name="i-lucide-loader" class="animate-spin text-2xl" />
-        <span>Cargando skills...</span>
-      </div>
+      <PageLoader v-if="loading" type="skeleton" >
+        <!-- Skeleton tabla -->
+        <UCard class="overflow-hidden">
+          <div class="bg-accented px-4 py-3 rounded-tr-xl rounded-tl-xl">
+            <USkeleton class="h-4 w-32" />
+          </div>
+
+          <div class="space-y-2">
+            <div
+              v-for="i in 5"
+              :key="i"
+              class="grid grid-cols-3 gap-4 px-4 py-3"
+            >
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-4 w-32" />
+              <USkeleton class="h-4 w-16" />
+            </div>
+          </div>
+        </UCard>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-6">
+            <USkeleton v-for="items in 4" :key="items" class="h-18 rounded-xl border border-muted"/>
+          </div>
+      </PageLoader>
 
       <!-- Error -->
       <div
@@ -225,40 +241,40 @@ const confirmDelete = async () => {
       </div>
 
       <!-- Table -->
-      <div
-        v-else
-        class="border border-accented rounded-lg overflow-hidden bg-elevated"
-      >
-        <UTable
-          :data="sortedSkills"
-          :columns="columns"
-          :ui="{ th: 'bg-accented text-left', td: 'py-3' }"
-          @row-click="goToEdit"
-        />
-
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <UAlert
-          color="neutral"
-          variant="soft"
-          :title="`Beginner (${levelStats.beginner})`"
-        />
-        <UAlert
-          color="info"
-          variant="soft"
-          :title="`Intermediate (${levelStats.intermediate})`"
-        />
-        <UAlert
-          color="warning"
-          variant="soft"
-          :title="`Advanced (${levelStats.advanced})`"
-        />
-        <UAlert
-          color="success"
-          variant="soft"
-          :title="`Expert (${levelStats.expert})`"
-        />
-      </div>
+       <section v-else>
+          <div        
+            class="border border-accented rounded-lg overflow-hidden bg-elevated"
+          >
+            <UTable
+              :data="sortedSkills"
+              :columns="columns"
+              :ui="{ th: 'bg-accented text-left', td: 'py-3' }"
+              @row-click="goToEdit"
+            />
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+              <UAlert
+                color="neutral"
+                variant="soft"
+                :title="`Beginner (${levelStats.beginner})`"
+              />
+              <UAlert
+                color="info"
+                variant="soft"
+                :title="`Intermediate (${levelStats.intermediate})`"
+              />
+              <UAlert
+                color="warning"
+                variant="soft"
+                :title="`Advanced (${levelStats.advanced})`"
+              />
+              <UAlert
+                color="success"
+                variant="soft"
+                :title="`Expert (${levelStats.expert})`"
+              />
+            </div>
+       </section>
 
     </NuxtLayout>
       <UModal

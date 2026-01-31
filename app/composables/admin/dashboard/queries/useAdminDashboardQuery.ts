@@ -15,7 +15,7 @@ export const useAdminDashboardQuery = () => {
       throw error
     }
 
-    console.log('[Dashboard][Raw data from Supabase]', data)
+    //console.log('[Dashboard][Raw data from Supabase]', data)
 
     return data ?? []
   }
@@ -24,7 +24,7 @@ export const useAdminDashboardQuery = () => {
     'admin-dashboard-items',
     fetchDashboardItems,
     {
-      server: false,
+      server: true,
       default: () => [],
     }
   )

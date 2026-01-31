@@ -7,12 +7,13 @@ import { useAdminTechnologiesQuery } from '~/composables/admin/technologies/quer
 
 import type { Tables } from '~/types/database.types'
 import { useDeleteTechnologyUseCase } from '~/composables/admin/technologies/usecases/useDeleteTechnologyUseCase'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 type Technology = Tables<'technologies'>
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
   name: 'technologies'
 })
 
@@ -148,7 +149,7 @@ const confirmDelete = async () => {
         size="sm"
         @click="goToCreate()"
       >
-        Nueva tecnología
+        Agregar
       </UButton>
     </template>
 
@@ -164,10 +165,27 @@ const confirmDelete = async () => {
 
 
     <!-- Loading -->
-    <div v-if="loading" class="flex flex-col items-center gap-2 py-16 text-gray-500">
-      <UIcon name="i-lucide-loader" class="animate-spin text-2xl" />
-      <span>Cargando tecnologías...</span>
-    </div>
+    <PageLoader v-if="loading" type="skeleton">
+      <!-- Skeleton tabla -->
+      <UCard class="overflow-hidden">
+        <div class="bg-accented px-4 py-3 rounded-tr-xl rounded-tl-xl">
+          <USkeleton class="h-4 w-32" />
+        </div>
+
+        <div class="space-y-2">
+          <div
+            v-for="i in 5"
+            :key="i"
+            class="grid grid-cols-3 gap-4 px-4 py-3"
+          >
+            <USkeleton class="h-4 w-24" />
+            <USkeleton class="h-4 w-32" />
+            <USkeleton class="h-4 w-16" />
+          </div>
+        </div>
+      </UCard>
+    </PageLoader>
+
 
     <!-- Error -->
     <div v-else-if="error" class="py-16 text-center text-red-500">

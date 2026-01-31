@@ -8,7 +8,7 @@ defineProps<{
 
 <template>
   <UBadge
-    :color="skill.levelColor"
+    color="neutral"
     variant="subtle"
     size="lg"
   >

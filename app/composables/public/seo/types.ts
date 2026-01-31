@@ -5,6 +5,7 @@ export interface SeoMeta {
   image?: string | null
   canonical?: string
   robots?: string
+  ogType?: 'website' | 'article'
   twitter?: {
     card?: 'summary' | 'summary_large_image'
     site?: string

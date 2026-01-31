@@ -13,7 +13,7 @@ import TechnologyStatusPanel from '~/components/admin/technologies/TechnologySta
 
 definePageMeta({
     layout: false,
-    middleware: 'admin-auth',
+    // middleware: 'admin-auth',
     
 })
 

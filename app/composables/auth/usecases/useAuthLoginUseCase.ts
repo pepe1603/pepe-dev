@@ -7,7 +7,8 @@ export const useAuthLoginUseCase = () => {
     const result = await loginQuery(payload)
 
     if (!result.error) {
-      await navigateTo('/')
+      //await navigateTo('/admin', { replace: true }) //elimanr 
+
     }
 
     return result

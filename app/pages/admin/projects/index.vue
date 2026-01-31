@@ -8,10 +8,11 @@ import { useAdminProjectsMutations } from '~/composables/admin/projects/queries/
 import type { TableColumn } from '@nuxt/ui'
 import type { ProjectFormModel } from '~/composables/admin/projects/models/ProjectFormModel'
 import type { RecordStatus } from '~/types'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
   name: 'admin-projects',
 })
 
@@ -30,7 +31,7 @@ const goToCreate = () => router.push('/admin/projects/new')
 type AdminProject = {
   id: string
   status: RecordStatus
-  updatedAt: string | null
+  updatedAt: string | null | undefined
 }
 
 const toAdminProject = (p: ProjectFormModel): AdminProject => ({
@@ -142,22 +143,66 @@ const adminColumns: TableColumn<AdminProject>[] = [
         <UButton
           color="primary"
           icon="i-lucide-plus"
+          size="sm"
           @click="goToCreate"
         >
-          Nuevo proyecto
+          Agregar
         </UButton>
       </template>
 
-      <!-- LOADING -->
-      <div
-        v-if="loading"
-        class="py-12 text-center"
-      >
-        <UIcon
-          name="i-lucide-loader-circle"
-          class="size-8 animate-spin text-primary mx-auto"
-        />
-      </div>
+      <!-- Loading -->
+      <PageLoader v-if="loading" type="skeleton" >
+
+         <!-- Cards items -->
+            <div class="my-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
+              <UCard
+                  v-for="card in 4"
+                  :key="card"
+                  class="p-5 space-y-3 h-64 md:h-72 lg:h-80 w-full"
+                >
+                <div class="space-y-3">
+
+                  <div class="flex items-center justify-between">
+                    <USkeleton class="h-4 w-3/5" />
+                    <USkeleton class="size-8 rounded-full" />
+                  </div>
+
+                  <USkeleton class="h-2 w-full" />
+
+                  <div class="flex gap-4 text-sm text-muted">
+                    <USkeleton class="h-2 w-5/6 mx-auto" />
+                    <USkeleton class="h-2 w-5/6 mx-auto" />
+                  </div>
+
+                  <USkeleton class="h-2 w-4 rounded-xl" />
+
+                </div>
+            </UCard>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-6">
+            <USkeleton v-for="items in 4" :key="items" class="h-18 rounded-xl border border-muted"/>
+          </div>
+          
+        <!-- Skeleton tabla -->
+        <UCard class="overflow-hidden">
+          <div class="bg-accented px-4 py-3 rounded-tr-xl rounded-tl-xl">
+            <USkeleton class="h-4 w-32" />
+          </div>
+
+          <div class="space-y-2">
+            <div
+              v-for="i in 5"
+              :key="i"
+              class="grid grid-cols-3 gap-4 px-4 py-3"
+            >
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-4 w-32" />
+              <USkeleton class="h-4 w-16" />
+            </div>
+          </div>
+        </UCard>
+      </PageLoader>
 
       <!-- ERROR -->
       <UAlert
