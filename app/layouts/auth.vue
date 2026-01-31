@@ -1,3 +1,4 @@
+<!-- app/layout/auth.vue -->
 <script setup lang="ts">
 import { useSeoHead } from '~/composables/public/seo/useSeoHead'
 
@@ -45,6 +46,15 @@ useSeoHead({
     <!-- Auth Content -->
     <section class="flex items-center justify-center px-6 py-12">
       <UContainer class="w-full max-w-md">
+        <div class="mb-4">
+          <NuxtLink
+            to="/"
+            class="inline-flex items-center gap-1 text-sm text-muted hover:text-primary transition"
+          >
+            <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
+            Volver al sitio
+          </NuxtLink>
+        </div>
         <UCard
           class="backdrop-blur-sm"
           :ui="{

@@ -20,13 +20,13 @@ defineProps<{
     <div class="flex justify-center">
       <UAvatar
         :src="avatar"
-        size="xl"
-        class="ring-4 ring-primary/10"
+        size="3xl"
+        class="ring-4 ring-primary/10 size-16 md:size-48 lg:size-56"
       />
     </div>
 
     <div class="space-y-2">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
         {{ name }}
       </h1>
       <p v-if="fields?.includes('headline')" class="text-xl text-muted" >
@@ -38,13 +38,15 @@ defineProps<{
       {{ bio }}
     </p>
 
-    <p v-if="location && fields?.includes('location')" class="text-muted">
-      Ubicación: {{ location }}
-    </p>
+    <div class="flex flex-wrap gap-4 text-sm text-muted  justify-start md:justify-center pt-2">
+      <p v-if="location && fields?.includes('location')" class="text-muted">
+        Ubicación: {{ location }}
+      </p>
 
-    <p v-if="email && fields?.includes('email')" class="text-muted">
-      Email público: {{ email }}
-    </p>
+      <p v-if="email && fields?.includes('email')" class="text-muted">
+        Email: {{ email }}
+      </p>
+    </div>
 
     <div v-if="links?.length && fields?.includes('links')" class="flex justify-center gap-3">
       <UButton
@@ -63,7 +65,7 @@ defineProps<{
         variant="outline"
         color="primary"
       >
-        Descargar CV
+        Descarga mi CV
       </UButton>
     </div>
   </section>

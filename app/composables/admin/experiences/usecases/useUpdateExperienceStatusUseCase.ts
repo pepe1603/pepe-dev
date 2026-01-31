@@ -1,7 +1,7 @@
 //app/composables/admin/experiences/usecases/useUpdateExperienceStatusUseCase.ts
 import { ref } from 'vue'
 import { useSupabaseClient } from '#imports'
-import type { RecordStatus } from '../models/ExperienceFormModel'
+import type { RecordStatus } from '~/types'
 
 export const useUpdateExperienceStatusUseCase = () => {
   const supabase = useSupabaseClient()

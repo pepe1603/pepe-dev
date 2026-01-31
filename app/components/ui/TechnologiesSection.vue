@@ -15,13 +15,14 @@ defineProps<{
  */
 function getCirclePosition(index: number, total: number, radius: number) {
   const angle = (index / total) * 2 * Math.PI
-  const x = Math.cos(angle) * radius
-  const y = Math.sin(angle) * radius
+  const x = +(Math.cos(angle) * radius).toFixed(2)
+  const y = +(Math.sin(angle) * radius).toFixed(2)
   return {
     transform: `translate(${x}px, ${y}px)`,
     transition: 'transform 0.5s'
   }
 }
+
 </script>
 
 
@@ -29,7 +30,7 @@ function getCirclePosition(index: number, total: number, radius: number) {
   <section class="flex flex-col gap-6 w-full items-center">
     <header class="text-center space-y-2">
       <h2 class="text-3xl font-bold">Stack tecnológico</h2>
-      <p class="text-muted">Herramientas y frameworks que utilizo en mis proyectos</p>
+      <p class="text-muted">Tecnologías, frameworks y herramientas que utilizo en mis proyectos</p>
     </header>
 
     <!-- LANDING: Círculo gigante de íconos -->

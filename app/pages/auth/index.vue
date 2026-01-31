@@ -1,8 +1,9 @@
+<!-- app/pages/auth/index.vue -->
 <script setup lang="ts">
 definePageMeta({
   layout: 'auth',
   name: 'auth-home',
-  middleware: 'guest',
+  // middleware: 'guest',
 })
 
 const toast = useToast()

@@ -4,7 +4,7 @@ import SkillBadge from './SkillBadge.vue'
 
 const props = defineProps<{
   categories: SkillCategoryView[]
-  flat?: boolean // <-- nuevo prop
+  flat?: boolean
 }>()
 </script>
 
@@ -12,10 +12,10 @@ const props = defineProps<{
   <section class="flex flex-col gap-6 w-full items-center">
     <header class="text-center space-y-2">
       <h2 class="text-3xl font-bold">
-        Habilidades técnicas
+        Habilidades profesionales
       </h2>
       <p class="text-muted">
-        Lenguajes, frameworks y herramientas con las que trabajo
+        Competencias técnicas y transversales que aplico en el desarrollo de software
       </p>
     </header>
 
@@ -46,7 +46,7 @@ const props = defineProps<{
             <UPageCard
               v-for="category in categories"
               :key="category.category"
-              variant="subtle"
+              variant="soft"
               class="space-y-4 w-fit shrink-0"
             >
               <h3 class="text-xl font-semibold text-center">

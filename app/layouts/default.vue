@@ -30,7 +30,7 @@ const year = new Date().getFullYear()
     <UHeader class="bg-cyan-50 dark:bg-cyan-900/25 text-current border-b border-gray-200 dark:border-gray-800">
       <template #left>
         <ULink to="/" class="flex items-center">
-          <UIcon name="i-lucide-rocket" class="w-6 h-6 text-primary-500" />
+          <UIcon name="i-lucide-rocket" class="w-6 h-6" />
           <span class="text-xl font-bold ml-2">Pepe.dev</span>
         </ULink>
       </template>
@@ -56,8 +56,9 @@ const year = new Date().getFullYear()
     <!-- Footer -->
     <UFooter class="flex justify-center items-center py-2 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
       <template #left>
-        <p class="text-sm text-neutral-500">© {{ year }} Pepe.dev</p>
-        <UButton variant="ghost" color="secondary" label="Authenticacion" :to="{name: 'auth-home'}" />
+        <p class="text-sm text-muted">© {{ year }} Pepe.dev</p>
+        <!-- <UButton variant="ghost" color="secondary" label="Authenticacion" :to="{name: 'auth-home'}" /> -->
+         <span class="hidden sm:inline text-xs text-neutral-500 ml-2">⌘+K para acceder al admin</span>
       </template>
     </UFooter>
   </div>

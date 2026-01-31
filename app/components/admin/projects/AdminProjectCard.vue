@@ -54,11 +54,11 @@ const formatDate = (date: string | null) => {
     <!-- FEATURED PIN -->
     <div
       v-if="project.isFeatured"
-      class="absolute top-3 right-3 z-10 bg-yellow-500/90 backdrop-blur-sm rounded-full p-1.5 shadow-lg"
+      class="absolute top-3 right-3 z-10 rounded-full p-1.5"
     >
       <UIcon
         name="i-lucide-star"
-        class="relative flex items-center justify-center text-white w-4 h-4"
+        class="relative flex items-center justify-center text-white w-4 h-4 bg-yellow-500/90"
       />
     </div>
             <!-- Botón para abrir en nueva pestaña -->
@@ -125,21 +125,21 @@ const formatDate = (date: string | null) => {
     </div>
 
     <!-- CONTENT -->
-    <div class="p-5 space-y-3">
+    <div class="p-3 space-y-2">
       <div>
-        <h3 class="font-semibold text-lg text-highlighted line-clamp-1">
+        <h3 class="font-semibold text-lg md:text-xl text-highlighted line-clamp-1">
           {{ project.title }}
         </h3>
-        <p v-if="project.subtitle" class="text-sm text-muted mt-1 line-clamp-1">
+        <p v-if="project.subtitle" class="text-sm md:text-lg text-muted mt-1 line-clamp-1">
           {{ project.subtitle }}
         </p>
       </div>
-      <p class="text-sm text-muted line-clamp-2 leading-relaxed">
+      <p class="text-xs md:teext-sm text-muted line-clamp-2 leading-relaxed">
         {{ project.shortDescription }}
       </p>
 
       <!-- FECHAS -->
-      <div class="flex flex-wrap gap-4 text-xs text-muted mt-2">
+      <div class="flex flex-wrap gap-4 text-xs text-muted">
         <span>
           Creado: {{ formatDate(project.createdAt) }}
         </span>
@@ -151,7 +151,7 @@ const formatDate = (date: string | null) => {
 
 
     <!-- INDICATORS -->
-    <div class="px-5 pb-5 flex flex-wrap gap-2">
+    <div class="px-3 pb-2">
 
       <UBadge v-if="project.status === 'published'" color="success" variant="soft" size="md">
         <UIcon name="i-lucide-check-circle" class="w-3.5 h-3.5" />

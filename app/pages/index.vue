@@ -8,6 +8,7 @@ import { usePublicTechnologiesCase } from '~/composables/public/usecases/usePubl
 
 import { useHomeSeoUseCase } from '~/composables/public/seo/useHomeSeoUseCase'
 import { useSeoHead } from '~/composables/public/seo/useSeoHead'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 definePageMeta({
   name: 'home',
@@ -37,10 +38,48 @@ const {
 
     <!-- PROFILE -->
     <section>
-      <USkeleton
+      <PageLoader
         v-if="profilePending"
-        class="h-64 w-full"
-      />
+        type="skeleton"
+      >
+        <section class="text-center space-y-6">
+
+          <!-- Avatar -->
+          <div class="flex justify-center">
+            <USkeleton
+              class="rounded-full ring-4 ring-primary/10
+                    size-16 md:size-48 lg:size-56"
+            />
+          </div>
+
+          <!-- Name + headline -->
+          <div class="space-y-3">
+            <USkeleton class="h-10 md:h-14 lg:h-16 w-64 mx-auto" />
+            <USkeleton class="h-6 w-80 mx-auto" />
+          </div>
+
+          <!-- Bio -->
+          <div class="space-y-2 max-w-2xl mx-auto">
+            <USkeleton class="h-4 w-full" />
+            <USkeleton class="h-4 w-5/6 mx-auto" />
+            <USkeleton class="h-4 w-4/6 mx-auto" />
+          </div>
+
+          <!-- Meta info -->
+          <div class="flex flex-wrap justify-center gap-4 pt-2">
+            <USkeleton class="h-4 w-32" />
+            <USkeleton class="h-4 w-40" />
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-center gap-3 pt-2">
+            <USkeleton class="h-9 w-9 rounded-md" />
+            <USkeleton class="h-9 w-9 rounded-md" />
+            <USkeleton class="h-9 w-28 rounded-md" />
+          </div>
+
+        </section>
+      </PageLoader>
 
       <UAlert
         v-else-if="profileError"
@@ -50,16 +89,48 @@ const {
         color="error"
       />
 
-      <ProfileHero
-        v-else-if="profile"
-        v-bind="profile"
-        :fields="['headline','bio','links']"
-      />
+        <div v-else-if="profile" class="space-y-6">
+          <ProfileHero
+            v-bind="profile"
+            :fields="['headline','bio','links']"
+          />
+          
+          <div class="flex justify-center">
+            <UButton 
+              label="Ver más sobre mí" 
+              :to="{ name: 'about-me' }" 
+              variant="link" 
+              color="primary"
+              size="lg"
+            />
+          </div>
+        </div>
     </section>
 
     <!-- TECHNOLOGIES -->
     <section>
-      <USkeleton v-if="technologiesPending" class="h-40 w-full" />
+      <PageLoader
+        v-if="technologiesPending"
+        type="skeleton"
+        :skeleton-count="2"
+      >
+        <section class="text-center space-y-6">
+          <!-- Title -->
+          <div class="space-y-3">
+            <USkeleton class="h-10 md:h-14 lg:h-16 w-64 mx-auto" />
+            <USkeleton class="h-6 w-80 mx-auto" />
+          </div>
+          <!-- sStack -->
+          <div class="flex justify-center">
+            <USkeleton
+              class="rounded-full 
+                    size-36 md:size-52 lg:size-125"
+            />
+          </div>
+
+          
+        </section>
+      </PageLoader>
 
       <UAlert
         v-else-if="technologiesError"
@@ -82,8 +153,5 @@ const {
         icon="i-lucide-cpu"
       />
     </section>
-
-
-
   </main>
 </template>

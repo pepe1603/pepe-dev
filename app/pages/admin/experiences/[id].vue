@@ -12,7 +12,7 @@ import ExperienceStatusPanel from '~/components/admin/experiences/ExperienceStat
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
 })
 
 const route = useRoute()

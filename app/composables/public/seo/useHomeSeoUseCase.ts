@@ -6,9 +6,9 @@ export const useHomeSeoUseCase = () => {
   const baseUrl = runtimeConfig.public.siteUrl
 
   return computed<SeoMeta>(() => ({
-    title: 'Pepe.dev — Fullstack Developer',
-    description:
-      'Portafolio profesional de Pepe.dev. Proyectos, experiencia y habilidades en desarrollo web.',
+    title: 'Pepe.dev — Full-Stack Developer',
+description:
+  'Portafolio profesional de Pepe.dev. Desarrollo web full-stack, proyectos reales y experiencia profesional.',
     image: `${baseUrl}/og/home.png`,
     canonical: `${baseUrl}/`,
     twitter: {

@@ -1,6 +1,7 @@
 <!-- app/pages/auth/login.vue -->
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { z } from 'zod'
+import type { FormSubmitEvent, AuthFormField } from '#ui/types'
 import { useAuthLoginUseCase } from '~/composables/auth/usecases/useAuthLoginUseCase'
 
 definePageMeta({
@@ -9,51 +10,81 @@ definePageMeta({
   name: 'auth-login',
 })
 
-const toast = useToast();
-const showPassword = ref(false);
+const toast = useToast()
+const { login, loading } = useAuthLoginUseCase()
 
-const form = reactive({
-  email: '',
-  password: '',
+// app/pages/auth/login.vue
+const user = useSupabaseUser()
+const router = useRouter()
+
+watch(
+  user,
+  (u) => {
+    if (u) {
+      router.replace('/admin')
+    }
+  }
+)
+
+
+// Schema de validación con Zod
+const schema = z.object({
+  email: z.string().email('Correo electrónico inválido'),
+  password: z.string().min(6, 'Mínimo 6 caracteres'),
 })
 
-const { login, loading, error: _error } = useAuthLoginUseCase()
+type Schema = z.output<typeof schema>
 
-const togglePassword = () => {
-  showPassword.value = !showPassword.value
-}
+// Configuración de campos del formulario
+const fields: AuthFormField[] = [
+  {
+    name: 'email',
+    type: 'email',
+    label: 'Correo electrónico',
+    placeholder: 'correo@ejemplo.com',
+    autocomplete: 'email',
+    required: true,
+  },
+  {
+    name: 'password',
+    type: 'password',
+    label: 'Contraseña',
+    placeholder: '••••••••',
+    autocomplete: 'current-password',
+    required: true,
+  },
+]
+
 const submitError = ref<string | null>(null)
 
-const onSubmit = async () => {
+async function onSubmit(event: FormSubmitEvent<Schema>) {
   submitError.value = null
 
   const { error } = await login({
-    email: form.email,
-    password: form.password,
+    email: event.data.email,
+    password: event.data.password,
   })
 
   if (error) {
-    submitError.value =
-      error.message ?? 'Credenciales inválidas'
-      toast.add({
-    title: 'Login Error',
-    description:
-      'Upps!, algo fallo, Revisa tus credenciales.',
-    icon: 'i-lucide-shield-x',
-    color: 'error',
-  })
-  }else{
+    submitError.value = error.message ?? 'Credenciales inválidas'
     toast.add({
-    title: 'Login success',
-    description:
-      'Bienvenido, Es un gussto tenerte de vuelta!.',
-    icon: 'i-lucide-shield-check',
-    color: 'success',
-  })
+      title: 'Error de autenticación',
+      description: 'Revisa tus credenciales e intenta nuevamente.',
+      icon: 'i-lucide-shield-x',
+      color: 'error',
+    })
+  } else {
+    toast.add({
+      title: 'Bienvenido',
+      description: 'Es un gusto tenerte de vuelta!',
+      icon: 'i-lucide-shield-check',
+      color: 'success',
+    })
   }
+  
 }
 
-const showRestrictedAccessInfo = () => {
+function showRestrictedAccessInfo() {
   toast.clear()
   toast.add({
     title: 'Acceso restringido',
@@ -63,105 +94,46 @@ const showRestrictedAccessInfo = () => {
     color: 'secondary',
   })
 }
-
-
-/**
- * Limpia el error cuando el usuario vuelve a escribir
- */
-watch(
-  () => [form.email, form.password],
-  () => {
-    submitError.value = null
-  }
-)
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <header class="text-center space-y-1">
-      <h2 class="text-2xl font-semibold">
-        Iniciar sesión
-      </h2>
-      <p class="text-muted">
-        Accede con tus credenciales
-      </p>
-    </header>
+  <UAuthForm
+    :schema="schema"
+    :fields="fields"
+    title="Iniciar sesión"
+    icon="i-lucide-lock-keyhole"
+    :loading="loading"
+    :submit="{ label: 'Iniciar sesión', block: true, size: 'lg' }"
+    @submit="onSubmit"
+  >
+    <!-- Descripción personalizada -->
+    <template #description>
+      Accede con tus credenciales de administrador.
+    </template>
 
-    <!-- Error -->
-    <UAlert
-      v-if="submitError"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-triangle"
-      description="Error"
-      :title="submitError"
-    />
-
-    <!-- Form -->
-    <UForm
-      :state="form"
-      class="space-y-4"
-      @submit.prevent="onSubmit"
-    >
-      <UFormField  label="Correo electrónico" name="email">
-        <UInput
-          v-model="form.email"
-          type="email"
-          placeholder="correo@ejemplo.com"
-          autocomplete="email"
-          class="w-full"
-          required
-        />
-      </UFormField>
-
-      <UFormField label="Contraseña" name="password">
-      <UInput
-        v-model="form.password"
-        :type="showPassword ? 'text' : 'password'"
-        placeholder="••••••••"
-        autocomplete="current-password"
-        class="w-full"
-        required
+    <!-- Enlace de "Olvidé mi contraseña" debajo del campo password -->
+    <template #password-hint>
+      <ULink
+        to="/auth/forgot-password"
+        class="text-primary font-medium text-sm"
+        tabindex="-1"
       >
-        <template #trailing>
-          <UButton
-            :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-            variant="ghost"
-            color="secondary"
-            size="xs"
-            :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-            tabindex="-1"
-            @click="togglePassword"
-          />
-        </template>
-      </UInput>
-    </UFormField>
+        ¿Olvidaste tu contraseña?
+      </ULink>
+    </template>
 
+    <!-- Mensaje de error de validación -->
+    <template v-if="submitError" #validation>
+      <UAlert
+        color="error"
+        icon="i-lucide-alert-triangle"
+        :title="submitError"
+      />
+    </template>
 
-      <UButton
-      class="mt-2"
-        type="submit"
-        size="lg"
-        block
-        :loading="loading"
-        :disabled="loading"
-      >
-        Iniciar sesión
-      </UButton>
-
-      <div class="flex flex-col items-center justify-between text-sm">
-        <UButton
-          variant="link"
-          color="primary"
-          size="sm"
-          to="/auth/forgot-password"
-          :disabled="loading"
-
-        >
-          ¿Olvidaste tu contraseña?
-        </UButton>
-
+    <!-- Footer con info de registro -->
+    <template #footer>
+      <div class="flex flex-col items-center gap-3 text-center">
         <USeparator label="o" />
 
         <UButton
@@ -174,13 +146,11 @@ watch(
           Crear cuenta
         </UButton>
 
-        <p class="text-xs text-muted text-center">
-          El inicio de sesión está habilitado únicamente para fines administrativos.
+        <p class="text-xs text-muted">
+          El inicio de sesión está habilitado únicamente para fines
+          administrativos.
         </p>
-
-
       </div>
-
-    </UForm>
-  </div>
+    </template>
+  </UAuthForm>
 </template>

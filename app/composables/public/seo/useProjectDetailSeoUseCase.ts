@@ -19,21 +19,23 @@ export const useProjectDetailSeoUseCase = (
       }
     }
 
-    const ogImage =
-      project.value.gallery?.[0]?.src
-        ? `${baseUrl}${project.value.gallery[0].src}`
-        : `${baseUrl}/og/projects.png`
+const ogImage =
+  project.value.cover.src
+    ? `${baseUrl}${project.value.cover.src}`
+    : `${baseUrl}/og/projects.png`
 
     return {
       title: `${project.value.title} | Pepe.dev`,
       description: project.value.description,
       image: ogImage,
       canonical: `${baseUrl}/projects/${slug}`,
+      ogType: 'article',
       twitter: {
         card: 'summary_large_image',
         site: '@pepe_dev',
         creator: '@pepe_dev',
       },
     }
+
   })
 }

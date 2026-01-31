@@ -2,16 +2,34 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { NavigationMenuItem } from '@nuxt/ui'
+import LogoutButton from '~/components/auth/LogoutButton.vue';
+import { usePublicProfileCase } from '~/composables/public/usecases/usePublicProfileUseCase';
 
 // ✅ Definir props que puede recibir el layout
 interface Props {
   title?: string
   description?: string
 }
-
 const props = defineProps<Props>()
 
+  // Ejecuta el caso de uso
+const { data: profile, pending } = usePublicProfileCase()
+
+const shortHeadline = computed(() => {
+  if (!profile.value?.headline) return 'Administrador'
+  const maxLength = 25 // número máximo de caracteres
+  return profile.value.headline.length > maxLength
+    ? profile.value.headline.slice(0, maxLength) + '…'
+    : profile.value.headline
+})
+
+const githubLink = computed(() => {
+  if (!profile?.value?.links) return null
+  return profile.value.links.find(p => p.type === 'github')?.url ?? null
+})
+
 const adminNavigation: NavigationMenuItem[] = [
+  { label: 'Dashboard', icon: 'i-lucide-layout-grid', to: '/admin' },
   { label: 'Perfil', icon: 'i-lucide-user', to: '/admin/profile' },
   { label: 'Proyectos', icon: 'i-lucide-folder-kanban', to: '/admin/projects' },
   { label: 'Tecnologias', icon: 'i-lucide-microchip', to: '/admin/technologies' },
@@ -24,6 +42,7 @@ const sidebarOpen = ref(false)
 // ✅ Usar props directamente (más simple y reactivo)
 const pageTitle = computed(() => props.title)
 const pageDescription = computed(() => props.description)
+
 </script>
 
 <template>
@@ -37,13 +56,13 @@ const pageDescription = computed(() => props.description)
       collapsible
     >
       <template #header="{ collapsed }">
-        <div class="flex items-center gap-2">
-          <UIcon name="i-lucide-layout-dashboard" class="w-5 h-5 text-primary" />
+        <div class="w-full flex items-center justify-center gap-2 ">
+          <!-- <UIcon name="i-lucide-layout-dashboard" class="w-5 h-5" /> -->
           <span
             v-if="!collapsed"
-            class="text-sm font-semibold tracking-tight"
+            class="text-sm md:text-lg lg:text-xl font-extrabold tracking-tight text-primary"
           >
-            Admin
+            Admin Panel
           </span>
         </div>
       </template>
@@ -54,30 +73,49 @@ const pageDescription = computed(() => props.description)
       />
 
       <template #footer="{ collapsed }">
-        <UButton
-          :label="collapsed ? undefined : 'Cerrar sesión'"
-          variant="ghost"
-          color="neutral"
-          icon="i-lucide-log-out"
-          class="w-full text-red-600 dark:text-red-400 inline-flex space-x-2 text-center justify-center"
-          :block="collapsed"
-          size="xs"
+        <LogoutButton
+        class="mx-auto"
+          :collapsed="collapsed"
+          confirm
         />
       </template>
     </UDashboardSidebar>
 
     <!-- MAIN -->
-    <UDashboardPanel class="">
+    <UDashboardPanel>
 
       <!-- GLOBAL NAVBAR -->
       <template #header>
         <UDashboardNavbar :ui="{root: 'border-none'}" >
           <template #right>
-            <UColorModeButton />
-            <UAvatar
+            <UUser
+              v-if="!pending && profile"
+              :to="githubLink"
+              target="_blank"
+              :name="profile.name"
+              :description="shortHeadline"
+              :avatar="{ src: profile.avatar }"
               size="sm"
-              src="https://www.flaticon.com/free-icon/person_10412383?term=profile+placeholder&page=1&position=1&origin=search&related_id=10412383"
-              alt="Admin"
+            />
+
+            <UUser
+              v-else
+              name="Cargando..."
+              description="..."
+              :avatar="{ src: '' }"
+              size="sm"
+            />
+
+
+            <UColorModeButton size="xs" variant="link" class="hover:text-primary" />
+            <UButton
+              to="/"
+              target="_blank"
+              variant="ghost"
+              color="neutral"
+              icon="i-lucide-external-link"
+              size="xs"
+              label="Ver sitio"
             />
             
           </template>
@@ -98,19 +136,18 @@ const pageDescription = computed(() => props.description)
                     <!-- PAGE HEADER -->
                 <div
                   v-if="pageTitle || pageDescription"
-                  class="flex items-start justify-between gap-6"
+                  class="flex items-start justify-between gap-4 mb-4"
                 >
-                  <div class="space-y-2 md:space-y-4">
+                  <div class="space-y-1 md:space-y-2.5">
                     <h1
                       v-if="pageTitle"
-                      class="text-2xl md:text-3xl font-semibold text-neutral-900 dark:text-neutral-100"
-                    >
+                      class="text-2xl md:text-3xl font-bold"                    >
                       {{ pageTitle }}
                     </h1>
 
                     <p
                       v-if="pageDescription"
-                      class="text-sm text-neutral-500 dark:text-neutral-400"
+                      class="text-sm"
                     >
                       {{ pageDescription }}
                     </p>

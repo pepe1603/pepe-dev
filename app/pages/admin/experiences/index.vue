@@ -6,12 +6,13 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Tables } from '~/types/database.types'
 import { useAdminExperiencesQuery } from '~/composables/admin/experiences/queries/useAdminExperiencesQuery'
 import { useDeleteExperienceUseCase } from '~/composables/admin/experiences/usecases/useDeleteExperienceUseCase'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 type Experience = Tables<'experiences'>
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
 })
 
 const { remove } = useDeleteExperienceUseCase()
@@ -116,19 +117,35 @@ const columns: TableColumn<Experience>[] = [
         <UButton
           color="primary"
           icon="i-lucide-plus"
+          size="sm"
           @click="goToCreate"
         >
-          New experience
+          Agregar
         </UButton>
       </template>
 
       <!-- Loading -->
-      <div v-if="loading" class="py-12 text-center">
-        <UIcon
-          name="i-lucide-loader-circle"
-          class="size-8 animate-spin text-primary mx-auto"
-        />
-      </div>
+      <PageLoader v-if="loading" type="skeleton">
+        <!-- Skeleton tabla -->
+        <UCard class="overflow-hidden">
+          <div class="bg-accented px-4 py-3 rounded-tr-xl rounded-tl-xl">
+            <USkeleton class="h-4 w-32" />
+          </div>
+
+          <div class="space-y-2">
+            <div
+              v-for="i in 5"
+              :key="i"
+              class="grid grid-cols-3 gap-4 px-4 py-3"
+            >
+              <USkeleton class="h-4 w-24" />
+              <USkeleton class="h-4 w-32" />
+              <USkeleton class="h-4 w-16" />
+            </div>
+          </div>
+        </UCard>
+      </PageLoader>
+
 
       <!-- Error -->
       <UAlert
@@ -160,7 +177,7 @@ const columns: TableColumn<Experience>[] = [
             th: 'bg-accented text-left',
             td: 'py-3'
           }"
-          @row-click="row => goToEdit(row.id)"
+          @row-click="goToEdit"
         />
       </div>
     </NuxtLayout>

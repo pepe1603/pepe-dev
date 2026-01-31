@@ -1,8 +1,8 @@
-//app/composables/useSupabase.ts
+// app/composables/useSupabase.ts (SIN CAMBIOS, solo verificación)
 import type { Database } from '~/types'
 
 export const useSupabase = () => {
-  const client = useSupabaseClient<Database>()
+  const client = useSupabaseClient<Database>() // ✅ Este ya maneja cookies automáticamente
   const user = useSupabaseUser()
 
   const isAuthenticated = computed<boolean>(() => Boolean(user.value))
@@ -14,6 +14,8 @@ export const useSupabase = () => {
 
   const currentUser = computed(() => {
     if (!user.value) return null
+
+    
 
     return {
       id: user.value.id,

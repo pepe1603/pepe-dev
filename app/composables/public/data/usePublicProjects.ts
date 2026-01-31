@@ -31,6 +31,7 @@ export const usePublicProjects = () => {
         is_featured,
         published_at
       `)
+       .order('published_at', { ascending: true }) // ✅ CLAVE para timeline
 
     if (error || !data) return []
 

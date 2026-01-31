@@ -12,7 +12,7 @@ import SkillStatusPanel from '~/components/admin/skills/SkillStatusPanel.vue'
 
 definePageMeta({
     layout: false,
-    middleware: 'admin-auth',
+    // middleware: 'admin-auth',
 })
 
 const route = useRoute()

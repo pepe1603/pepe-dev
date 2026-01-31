@@ -1,5 +1,6 @@
 <!-- app/pages/projects/index.vue -->
 <script setup lang="ts" name="ProjectsPage">
+import PageLoader from '~/components/common/PageLoader.vue'
 import ProjectList from '~/components/ui/ProjectList.vue'
 import { useProjectsSeoUseCase } from '~/composables/public/seo/useProjectsSeoUseCase'
 import { useSeoHead } from '~/composables/public/seo/useSeoHead'
@@ -24,14 +25,38 @@ const {
 
 <template>
   <section class="space-y-10">
-    <header>
-      <h1 class="text-3xl font-semibold">Proyectos</h1>
-    </header>
-
-    <USkeleton
+    <PageLoader
       v-if="pending"
-      class="h-40 w-full"
-    />
+      type="skeleton"
+      :skeleton-count="4"
+      >
+
+    <!-- Skeleton estilo ProjectList -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto px-4 py-8">
+        <div v-for="n in 4" :key="n" class="rounded-2xl overflow-hidden border border-accented/10 shadow-sm animate-pulse">
+          
+          <!-- Imagen placeholder -->
+          <USkeleton class="relative aspect-video bg-muted" />
+
+          <!-- Contenido placeholder -->
+          <USkeleton class="p-6 space-y-4">
+            <!-- Título -->
+            <USkeleton class="h-5 w-3/4 bg-muted rounded" />
+            <!-- Fecha -->
+            <USkeleton class="h-4 w-20 bg-muted rounded" />
+            <!-- Extracto -->
+            <USkeleton class="space-y-2">
+              <USkeleton class="h-3 w-full bg-muted rounded" />
+              <USkeleton class="h-3 w-5/6 bg-muted rounded" />
+            </USkeleton>
+            <!-- CTA -->
+            <USkeleton class="h-4 w-1/2 bg-muted rounded mt-4" />
+          </USkeleton>
+
+        </div>
+      </div>
+        
+    </PageLoader>
 
     <UAlert
       v-else-if="error"

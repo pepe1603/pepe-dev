@@ -13,11 +13,12 @@ import ProjectForm from '~/components/admin/projects/ProjectForm.vue'
 import ProjectStatusPanel from '~/components/admin/projects/ProjectStatusPanel.vue'
 import ProjectMediaPanel from '~/components/admin/projects/media_project/ProjectMediaPanel.vue'
 import type { ProjectCreateModel } from '~/composables/admin/projects/models/ProjectCreateModel'
+import PageLoader from '~/components/common/PageLoader.vue'
 
 
 definePageMeta({
   layout: false,
-  middleware: 'admin-auth',
+  // middleware: 'admin-auth',
 })
 
 const route = useRoute()
@@ -198,20 +199,20 @@ const editForm = computed<ProjectFormModel | null>(() =>
     <div >
       <div class="max-w-5xl  mx-auto ">
         <!-- Loading State -->
-        <div 
-          v-if="isLoadingProject" 
-          class="flex items-center justify-center py-12"
+
+        <PageLoader
+          v-if="isLoadingProject"
+          type="skeleton"
+          message="Cargando dashboard..."
         >
-          <div class="text-center space-y-3">
-            <UIcon 
-              name="i-lucide-loader-circle" 
-              class="size-8 animate-spin text-primary mx-auto"
-            />
-            <p class="text-sm text-muted">
-              Loading project...
-            </p>
+          <!-- Skeleton personalizado para cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <UCard v-for="i in 3" :key="i">
+              <USkeleton class="h-4 w-24 mb-2" />
+              <USkeleton class="h-8 w-16" />
+            </UCard>
           </div>
-        </div>
+        </PageLoader>
 
         <!-- Content -->
         <template v-else>

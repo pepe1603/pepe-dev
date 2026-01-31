@@ -1,13 +1,15 @@
 <!-- app/components/ui/media/MediaImageGallery.vue -->
-
 <script setup lang="ts">
 import type { PublicMediaItem } from './publicMedia.types'
+import { ref, computed } from 'vue'
 
 const props = defineProps<{
   items: PublicMediaItem[]
 }>()
 
 const selected = ref<PublicMediaItem | null>(null)
+
+const useCarousel = computed(() => props.items.length >= 4)
 </script>
 
 <template>
@@ -17,8 +19,11 @@ const selected = ref<PublicMediaItem | null>(null)
       <h3 class="text-xl font-semibold">Galería</h3>
     </header>
 
-    <!-- Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- GRID (pocas imágenes) -->
+    <div
+      v-if="!useCarousel"
+      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+    >
       <button
         v-for="img in items"
         :key="img.id"
@@ -33,7 +38,6 @@ const selected = ref<PublicMediaItem | null>(null)
           class="w-full h-full aspect-square object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
-        <!-- Hover overlay -->
         <div
           class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-sm"
         >
@@ -41,6 +45,37 @@ const selected = ref<PublicMediaItem | null>(null)
         </div>
       </button>
     </div>
+
+    <!-- CAROUSEL (muchas imágenes) -->
+    <UCarousel
+      v-else
+      v-slot="{ item }"
+      :items="items"
+      arrows
+      dots
+      loop
+      :autoplay="{ delay: 5000 }"
+      :ui="{
+        container: 'h-80',
+        prev: 'start-4',
+        next: 'end-4'
+      }"
+      class="w-full"
+    >
+      <button
+        class="relative w-full h-80 rounded-lg overflow-hidden shadow-md"
+        @click="selected = item"
+      >
+        <img
+          :src="item.src"
+          :alt="item.alt"
+          class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          loading="lazy"
+        />
+      </button>
+    </UCarousel>
+
+
 
     <!-- Modal -->
     <Teleport to="body">
@@ -67,46 +102,3 @@ const selected = ref<PublicMediaItem | null>(null)
     </Teleport>
   </section>
 </template>
-
-
-
-
-<!-- <script setup lang="ts" vbersion 1>
-import type { PublicMediaItem } from './publicMedia.types'
-
-defineProps<{
-  items: PublicMediaItem[]
-}>()
-</script>
-
-<template>
-  <section>
-    <h3 class="text-lg font-semibold mb-4">
-      Galería
-    </h3>
-
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-    >
-      <figure
-        v-for="item in items"
-        :key="item.id"
-        class="group relative overflow-hidden rounded-lg border bg-muted"
-      >
-        <img
-          :src="item.src"
-          :alt="item.alt"
-          class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
-
-        <figcaption
-          v-if="item.caption"
-          class="absolute inset-x-0 bottom-0 bg-black/60 text-white text-xs px-2 py-1"
-        >
-          {{ item.caption }}
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-</template> -->
