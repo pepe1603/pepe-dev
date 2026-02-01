@@ -49,7 +49,7 @@ const year = new Date().getFullYear()
     </UHeader>
 
     <!-- Contenido principal -->
-    <UMain class="py-6 px-4">
+    <UMain class="py-2.5 px-4 mt-16">
       <slot />
     </UMain>
 

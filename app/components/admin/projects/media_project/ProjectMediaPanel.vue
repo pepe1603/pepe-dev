@@ -305,6 +305,34 @@ const dropdownItems = (item: ProjectMediaItemModel) => [
 
         </div>
 
+
+        <!-- Metadata (read-only) -->
+        <div
+          v-if="!isEditing(item.id)"
+          class="mt-4 space-y-1 text-sm text-muted"
+        >
+          <p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Nombre:</span>
+            {{ item.name }}
+          </p>
+
+          <p v-if="item.alt">
+            <span class="font-medium text-gray-700 dark:text-gray-300">Alt:</span>
+            {{ item.alt }}
+          </p>
+
+          <p v-if="item.caption">
+            <span class="font-medium text-gray-700 dark:text-gray-300">Caption:</span>
+            {{ item.caption }}
+          </p>
+
+          <p>
+            <span class="font-medium text-gray-700 dark:text-gray-300">Tipo:</span>
+            {{ item.type }}
+          </p>
+        </div>
+
+
         <USeparator class="my-4" />
 
         <!-- Actions -->
@@ -320,7 +348,9 @@ const dropdownItems = (item: ProjectMediaItemModel) => [
             Guardar
           </UButton>
 
-          <div v-else />
+          <span v-else class="text-xs text-muted italic">
+            Solo lectura
+          </span>
 
           <!-- Dropdown -->
           <UDropdownMenu :items="dropdownItems(item)">

@@ -11,18 +11,21 @@ defineProps<{
   <section class="space-y-12">
 
     <!-- HERO -->
-    <header class="space-y-6">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
-        {{ project.title }}
-      </h1>
+    <header class="space-y-4 p-2">
 
-      <p v-if="project.excerpt" class="text-xl text-muted max-w-3xl">
-        {{ project.excerpt }}
-      </p>
-
-      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
-        {{ project.description }}
-      </p>
+      <div class="space-y-5">
+        <h1 class="text-3xl md:text-5xl text-primary-500 dark:text-primary-400 font-bold mb-6 tracking-tight">
+          {{ project.title }}
+        </h1>
+          <p v-if="project.excerpt" class="text-base sm:text-xl font-semibold">
+            {{ project.excerpt }}
+          </p>
+        <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800">
+          <p class="text-xs sm:text-sm md:text-base text-gray-700 dark:text-gray-300 mb-1 whitespace-pre-line ">
+            {{ project.description }}
+          </p>
+        </div>
+      </div>
 
       <!-- Cover image / hero -->
       <div class="relative rounded-lg overflow-hidden border border-accented bg-muted">
@@ -79,7 +82,7 @@ defineProps<{
     </div>
 
     <!-- TECHNOLOGIES -->
-    <UCard v-if="project.technologies.length" variant="soft">
+    <UCard v-if="project.technologies.length" variant="outline">
       <template #header>
         <h2 class="font-semibold text-lg">Technologies used</h2>
       </template>
@@ -101,38 +104,5 @@ defineProps<{
       v-if="project.media.length"
       :media="project.media"
     />
-
-
-    <!-- GALLERY
-    <section v-if="project.gallery.length" class="space-y-4">
-      <h2 class="text-2xl font-semibold">Project gallery</h2>
-
-      <UCarousel
-        v-slot="{ item }"
-        :items="project.gallery"
-        arrows
-        dots
-        loop
-        :autoplay="{ delay: 5000 }"
-        :prev="{ variant: 'solid', color: 'neutral' }"
-        :next="{ variant: 'solid', color: 'neutral' }"
-        :ui="{
-          container: 'h-80',
-          prev: 'start-4',
-          next: 'end-4'
-        }"
-        class="w-full"
-      >
-        <div class="relative w-full h-80 rounded-lg overflow-hidden shadow-md">
-          <img
-            :src="item.src"
-            :alt="item.alt || project.title"
-            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-            loading="lazy"
-          />
-        </div>
-      </UCarousel>
-    </section> -->
-
   </section>
 </template>

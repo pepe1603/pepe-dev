@@ -27,7 +27,7 @@ export default defineNuxtConfig({
     cookieOptions: {
       maxAge: 60 * 60 * 8,
       sameSite: 'lax',
-      secure: true, // Solo desarrollo - ¡Cambiar a true en producción!
+      secure: true, // En desarrollo a false- ¡Cambiar a true en producción!
     },
     clientOptions: {
       auth: {
