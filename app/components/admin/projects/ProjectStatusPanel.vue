@@ -1,7 +1,8 @@
 <script setup lang="ts" name="ProjectStatusPanel">
 import { computed, ref, watch } from 'vue'
-import type { RecordStatus } from '~/composables/admin/projects/models/ProjectFormModel'
+
 import { useUpdateProjectStatusUseCase } from '~/composables/admin/projects/usecases/useUpdateProjectStatusUseCase';
+import type { RecordStatus } from '~/types';
 
 const props = defineProps<{
   id: string
@@ -104,6 +105,18 @@ const actionLabels: Record<StatusAction, string> = {
 
 <template>
   <div class="border border-accented rounded-lg p-5 bg-muted/30 space-y-4">
+
+                      <!-- Aviso sobre el estado -->
+            <UAlert
+              color="info"
+              variant="soft"
+              icon="i-lucide-info"
+              title="Estado del proyecto"
+              description="No es necesario guardar el formulario para cambiar el estado. El cambio se aplicará inmediatamente."
+              class="my-4"
+            />
+
+
     <div class="flex items-center justify-between">
       <div>
         <div class="font-medium">Status</div>
@@ -129,6 +142,7 @@ const actionLabels: Record<StatusAction, string> = {
 
     <!-- Actions -->
     <div v-if="availableActions.length" class="flex gap-2 flex-wrap">
+      
       <UButton
         v-for="action in availableActions"
         :key="action"
@@ -145,6 +159,7 @@ const actionLabels: Record<StatusAction, string> = {
       >
         {{ actionLabels[action] }}
       </UButton>
+
     </div>
 
     <div v-else class="text-xs text-muted">

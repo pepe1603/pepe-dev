@@ -4,7 +4,6 @@ import { ref } from 'vue'
 import { useSupabaseClient } from '#imports'
 import type { Media } from '~/types'
 import type { ProjectMediaItemModel } from '../models/ProjectMediaItemModel'
-import type { MediaType } from '~/constants/mediaTypes'
 
 export const useAdminProjectMediaQuery = (projectId: string) => {
   const supabase = useSupabaseClient()
@@ -28,12 +27,13 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
       url,
       alt,
       caption,
-      type,
       name,
+      sort_order,
       created_at,
       updated_at
     `
     )
+    .order('sort_order')
     .eq('project_id', projectId)
 
     loading.value = false
@@ -44,6 +44,8 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
       return
     }
 
+    console.log('useAdminProjectMEdiaQuery-> projects->media: ', data);
+
     media.value = (data as Media[]).map(
       (row): ProjectMediaItemModel => ({
         id: row.id,
@@ -51,8 +53,8 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
         url: row.url,
         alt: row.alt,
         caption: row.caption,
-        type: row.type as MediaType,
-        name: row.name
+        name: row.name,
+        sortOrder: row.sort_order,
       })
     )
   }

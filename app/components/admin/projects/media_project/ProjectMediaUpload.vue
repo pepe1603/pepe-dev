@@ -1,177 +1,181 @@
 <!-- app/components/admin/projects/media_project/ProjectMediaUpload.vue -->
 <script setup lang="ts" name="ProjectMediaUpload">
 import { ref, onBeforeUnmount } from 'vue'
-import { useSupabaseClient } from '#imports'
 import { useUploadService } from '~/composables/uploads/useUploadService'
-import type { MediaType } from '~/constants/mediaTypes'
-import { MEDIA_MIME_MAP } from '~/constants/mediaMimeMap';
 
 const props = defineProps<{
   projectSlug: string
-  accept?: string
-  initialUrl?: string
 }>()
 
 const emit = defineEmits<{
-  (
-    e: 'uploaded',
-    payload: {
-      url: string
-      name: string
-      type: MediaType
-    }
-  ): void
+  (e: 'uploaded', payload: { url: string; name: string }): void
 }>()
 
-const supabase = useSupabaseClient()
 const { upload } = useUploadService()
 
 const fileInput = ref<HTMLInputElement | null>(null)
-const previewUrl = ref<string | null>(props.initialUrl ?? null)
+
+const file = ref<File | null>(null)
+const previewUrl = ref<string | null>(null)
+const filename = ref('')
 const uploading = ref(false)
 const error = ref<string | null>(null)
 
-const detectMediaType = (file: File): MediaType => {
-  const mime = file.type
+/* ---------------- FILE SELECT ---------------- */
+const onFileSelect = (files: FileList | null) => {
+  if (!files?.[0]) return
 
-  // 1️⃣ match exacto
-  for (const [type, mimes] of Object.entries(MEDIA_MIME_MAP)) {
-    if (mimes.includes(mime)) {
-      return type as MediaType
-    }
-  }
+  cleanup()
 
-  // 2️⃣ fallback por prefijo permitido
-  if (mime.startsWith('image/')) return 'image'
-  if (mime.startsWith('video/')) return 'video'
-
-  // 3️⃣ fallback seguro
-  return 'image'
+  file.value = files[0]
+  filename.value = files[0].name.replace(/\.[^/.]+$/, '')
+  previewUrl.value = URL.createObjectURL(files[0])
 }
 
-
-//aceopt gfenerado
-const buildAcceptFromMediaTypes = (types: MediaType[]) => {
-  return types
-    .flatMap(type => MEDIA_MIME_MAP[type])
-    .join(',')
-}
-
-const acceptComputed = buildAcceptFromMediaTypes([
-  'image',
-  'gif',
-  'video',
-  'pdf',
-])
-
-
-
-/**
- * Handle file upload
- */
-const onFileChange = async (event: Event) => {
-  const file = (event.target as HTMLInputElement)?.files?.[0]
-  if (!file) return
+/* ---------------- UPLOAD ---------------- */
+const uploadImage = async () => {
+  if (!file.value) return
 
   uploading.value = true
   error.value = null
 
-  // 🔍 Preview inmediato
-  if (previewUrl.value) {
-    URL.revokeObjectURL(previewUrl.value)
-  }
-  previewUrl.value = URL.createObjectURL(file)
-
   try {
-    // 1️⃣ Upload físico
-    const result = await upload(file, 'project-media', {
+    const extension = file.value.name.split('.').pop()!
+
+    const result = await upload(file.value, 'project-media', {
       projectSlug: props.projectSlug,
-      filename: file.name,
+      filename: `${filename.value}.${extension}`
     })
 
-    // 2️⃣ Resolver URL pública (para preview y DB)
-    const { data } = supabase.storage
-      .from('project-media')
-      .getPublicUrl(result.path)
-
-    if (!data?.publicUrl) {
-      throw new Error('No se pudo obtener la URL pública del archivo')
+    if (!result.publicUrl) {
+      throw new Error('No se pudo obtener URL pública')
     }
 
-    console.log('Bucket URL:', data.publicUrl)
-
-    console.log('Bucket data:', data)
-
-
-    // 3️⃣ Emitir al panel (DB layer)
     emit('uploaded', {
-      url: data.publicUrl,
-      name: file.name,
-      type: detectMediaType(file),
+      url: result.publicUrl,
+      name: filename.value
     })
+
+    cleanup()
   } catch (e: any) {
-    console.error(e)
-    error.value = e?.message ?? 'Upload failed'
+    error.value = e?.message ?? 'Error al subir imagen'
   } finally {
     uploading.value = false
   }
 }
 
-/**
- * Cleanup preview blob
- */
-onBeforeUnmount(() => {
+/* ---------------- CLEANUP ---------------- */
+const cleanup = () => {
   if (previewUrl.value) {
     URL.revokeObjectURL(previewUrl.value)
   }
-})
+
+  file.value = null
+  previewUrl.value = null
+  filename.value = ''
+}
+
+onBeforeUnmount(cleanup)
 </script>
 
 <template>
-  <div class="space-y-2">
-    <!-- Preview -->
+  <div class="space-y-4">
+
+    <!-- CONTENEDOR ÚNICO: Drag & Drop + Preview -->
     <div
-      class="relative w-full h-52 rounded border border-accented border-dashed border-spacing-20 flex items-center justify-center overflow-hidden"
+      class="relative w-full h-64 rounded-xl border-2 border-dashed
+             border-gray-300 dark:border-gray-700
+             flex items-center justify-center text-center
+             transition-all duration-300
+             hover:border-primary-500 hover:bg-primary-50/40
+             dark:hover:bg-primary-900/20
+             bg-gray-50 dark:bg-gray-900 overflow-hidden"
     >
+      <!-- Estado vacío -->
+      <div v-if="!previewUrl && !uploading" class="pointer-events-none">
+        <UIcon
+          name="i-lucide-image-plus"
+          class="mx-auto mb-2 size-8 text-gray-400"
+        />
+        <p class="text-sm text-gray-500">
+          Arrastra una imagen aquí o haz click para seleccionarla
+        </p>
+      </div>
+
+      <!-- Preview -->
       <img
         v-if="previewUrl"
         :src="previewUrl"
-        class="w-full h-full object-cover"
+        class="absolute inset-0 w-full h-full object-cover"
       />
-      <div v-else class="text-sm text-muted">
-        Sin archivo
-      </div>
 
+      <!-- Loader -->
       <div
         v-if="uploading"
         class="absolute inset-0 bg-black/40 flex items-center justify-center"
       >
         <UIcon
           name="i-lucide-loader-circle"
-          class="size-6 text-white animate-spin"
+          class="size-8 text-primary animate-spin"
         />
       </div>
-    </div>
 
-    <!-- Input hidden -->
+      <!-- Input invisible (drag + click) -->
       <input
         ref="fileInput"
         type="file"
-        :accept="acceptComputed"
-        class="hidden"
-        @change="onFileChange"
+        accept="image/*"
+        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        @change="onFileSelect(($event.target as HTMLInputElement).files)"
       />
+    </div>
 
+    <!-- Leyenda / descripción -->
+    <p class="text-sm text-muted">
+      Puedes arrastrar una imagen o usar el botón <strong>Elegir imagen</strong>.
+      La imagen no se guardará hasta que confirmes.
+    </p>
 
-    <!-- Action -->
-    <UButton
-      size="sm"
-      color="primary"
-      :loading="uploading"
-      @click="fileInput?.click()"
-    >
-      Subir archivo
-    </UButton>
+    <!-- Nombre del archivo -->
+    <UFormField label="Nombre del archivo (opcional)">
+      <UInput
+        v-if="file"
+        v-model="filename"
+        placeholder="Nombre de la imagen"
+        class="w-full"
+      />
+    </UFormField>
+
+    <!-- Acciones (SE QUEDAN) -->
+    <div class="flex gap-2">
+      <UButton
+        variant="soft"
+        icon="i-lucide-image-plus"
+        @click="fileInput?.click()"
+      >
+        Elegir imagen
+      </UButton>
+
+      <UButton
+        v-if="file"
+        color="primary"
+        :loading="uploading"
+        icon="i-lucide-upload"
+        @click="uploadImage"
+      >
+        Guardar en la galería
+      </UButton>
+
+      <UButton
+        v-if="file"
+        variant="subtle"
+        color="neutral"
+        icon="i-lucide-x"
+        @click="cleanup"
+      >
+        Cancelar
+      </UButton>
+    </div>
 
     <!-- Error -->
     <UAlert
@@ -180,5 +184,6 @@ onBeforeUnmount(() => {
       variant="soft"
       :title="error"
     />
+
   </div>
 </template>

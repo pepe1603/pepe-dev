@@ -1,50 +1,46 @@
 // app/composables/admin/projects/media_project/usecases/useProjectMediaUseCases.ts
-import { useSupabaseClient } from '#imports'
 import type { ProjectMediaItemModel } from '../models/ProjectMediaItemModel'
-import type { ProjectMediaInsertModel } from '../models/ProjectMediaInsertModel'
-import type { Media } from '~/types'
-import type { MediaType } from '~/constants/mediaTypes'
-
+import type { InsertProjectMediaResult } from '../models/ProjectMediaRpcModels'
 export const useProjectMediaUseCases = () => {
-  const supabase = useSupabaseClient()
+  const { client } = useSupabase()
 
   /**
    * Create media
    */
-const createMedia = async (
-  payload: ProjectMediaInsertModel
-): Promise<ProjectMediaItemModel> => {
-  const { data, error } = await supabase
-    .from('media')
-    .insert({
-      project_id: payload.projectId,
-      url: payload.url,
-      alt: payload.alt ?? null,
-      caption: payload.caption ?? null,
-      type: payload.type,
-      name: payload.name ?? 'project-media',
+const createMedia = async (payload: {
+  projectId: string
+  name: string
+  url: string
+  alt?: string | null
+  caption?: string | null
+}) => {
+  const { data, error } = await client
+  .rpc(
+    'insert_project_media',
+    {
+      p_project_id: payload.projectId,
+      p_name: payload.name,
+      p_url: payload.url,
+      p_alt: payload.alt ?? '',
+      p_caption: payload.caption ?? '',
     })
-    .select()
-    .single()
+  .single<InsertProjectMediaResult>()
 
-  if (error || !data) {
-    console.error(error)
-    throw new Error('Failed to create media')
-  }
+  if (error) throw error
+  if (!data) throw new Error('No media returned from RPC')
 
-  const row = data as Media
+  // 🔥 MAPEO CRÍTICO
 
   return {
-    id: row.id,
-    projectId: row.project_id,
-    url: row.url,
-    alt: row.alt,
-    caption: row.caption,
-    type: row.type as MediaType,
-    name: row.name
-  }
+    id: data.id,
+    projectId: data.project_id,
+    name: data.name,
+    url: data.url,
+    alt: data.alt,
+    caption: data.caption,
+    sortOrder: data.sort_order,
+  } satisfies ProjectMediaItemModel
 }
-
 
   /**
    * Update media
@@ -53,12 +49,11 @@ const createMedia = async (
     id: string,
     payload: Partial<ProjectMediaItemModel>
     ) => {
-    const { error } = await supabase
+    const { error } = await client //aqui no da error
         .from('media')
         .update({
         alt: payload.alt ?? null,
         caption: payload.caption ?? null,
-        type: payload.type,
         name: payload.name ?? undefined, 
         url: payload.url,
         })
@@ -70,12 +65,35 @@ const createMedia = async (
     }
     }
 
+    /**Metood de media-ordenamiento  */
+
+    const updateMediaOrder = async (
+      updates: { id: string; sortOrder: number }[]
+    ) => {
+      const promises = updates.map(u =>
+        client
+          .from('media')
+          .update({ sort_order: u.sortOrder })
+          .eq('id', u.id)
+      )
+
+      const results = await Promise.all(promises)
+
+      const error = results.find(r => r.error)?.error
+      if (error) {
+        console.error(error)
+        throw new Error('Failed to update media order')
+      }
+    }
+
+
+
 
   /**
    * Delete media
    */
   const deleteMedia = async (id: string) => {
-    const { error } = await supabase
+    const { error } = await client
       .from('media')
       .delete()
       .eq('id', id)
@@ -90,5 +108,6 @@ const createMedia = async (
     createMedia,
     updateMedia,
     deleteMedia,
+    updateMediaOrder,
   }
 }

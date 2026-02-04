@@ -1,6 +1,6 @@
 <!-- app/components/admin/projects/ProjectForm.vue -->
 <script setup lang="ts" name="ProjectForm">
-import { reactive, watch } from 'vue'
+import { reactive, watch, ref, computed } from 'vue'
 import type { ProjectFormModel } from '~/composables/admin/projects/models/ProjectFormModel'
 import { projectFormSchema } from '~/composables/admin/projects/useProjectFormSchema'
 import { slugify } from '~/utils/slugify'
@@ -43,6 +43,10 @@ const localForm = reactive<ProjectFormModel>({
   technologyIds: [],
 })
 
+const isSlugManuallyEdited = ref(false)
+const originalSlug = ref('')
+
+
 const statusOptions = [
   { label: 'Draft', value: 'draft' },
   { label: 'Published', value: 'published' },
@@ -69,6 +73,8 @@ watch(
   () => props.modelValue,
   (value) => {
     Object.assign(localForm, value)
+    originalSlug.value = value.slug
+    isSlugManuallyEdited.value = false
   },
   { immediate: true, deep: true }
 )
@@ -77,6 +83,7 @@ watch(
   () => localForm.title,
   (title) => {
     if (!props.isCreate) return
+    if (isSlugManuallyEdited.value) return
 
     localForm.slug = slugify(title)
   }
@@ -102,13 +109,14 @@ const onSubmit = () => {
         Basic Information
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full">
+
         <!-- Title -->
         <UFormField 
           label="Title" 
           name="title" 
           required
-          class="md:col-span-2"
+          class="md:col-span-7"
         >
           <UInput 
             v-model="localForm.title" 
@@ -121,34 +129,58 @@ const onSubmit = () => {
         <!-- Slug -->
         <UFormField
           name="slug"
-          class="md:col-span-2"
+          :class="isSlugManuallyEdited ? 'md:col-span-12' : 'col-span-5'"
         >
           <template #label>
             <div class="flex items-center gap-2">
               <span>Slug</span>
 
+              <!-- Auto-generated badge -->
               <UBadge
-                v-if="isCreate && localForm.slug"
+                v-if="isCreate && localForm.slug && !isSlugManuallyEdited"
                 size="xs"
                 color="info"
                 variant="soft"
               >
                 Auto-generated
               </UBadge>
+
+              <!-- Manual badge -->
+              <UBadge
+                v-if="isSlugManuallyEdited"
+                size="xs"
+                color="warning"
+                variant="soft"
+              >
+                Manual
+              </UBadge>
             </div>
           </template>
 
-  <UInput
-    v-model="localForm.slug"
-    :readonly="isCreate"
-    size="lg"
-    class="w-full"
-  />
-
-  <template v-if="isCreate" #help>
-    Generated automatically from the title
-  </template>
-</UFormField>
+          <UInput
+            v-model="localForm.slug"
+            :readonly="isCreate && !isSlugManuallyEdited"
+            size="lg"
+            class="w-full"
+            @update:model-value="isSlugManuallyEdited = true"
+          />
+        </UFormField>
+                  <!-- Warning alert solo en modo edición -->
+          <UAlert
+            v-if="!isCreate && isSlugManuallyEdited"
+            color="warning"
+            variant="soft"
+            icon="i-lucide-alert-triangle"
+            class="md:col-span-12 mt-2"
+          >
+            <template #title>Slug modificado manualmente</template>
+            <template #description>
+              Cambiar el slug puede afectar URLs públicas y rutas de imágenes previamente subidas.
+              <p class="text-xs text-muted mt-1">
+                Slug original: <code class="font-mono text-black dark:text-white">{{ originalSlug }}</code>
+              </p>
+            </template>
+          </UAlert>
 
 
         <!-- Subtitle -->

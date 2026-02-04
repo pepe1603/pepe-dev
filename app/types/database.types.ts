@@ -1,4 +1,3 @@
-//app/types/database.types.ts
 export type Json =
   | string
   | number
@@ -93,7 +92,7 @@ export type Database = {
           id: string
           name: string
           project_id: string
-          type: string
+          sort_order: number
           updated_at: string | null
           url: string
         }
@@ -104,7 +103,7 @@ export type Database = {
           id?: string
           name: string
           project_id: string
-          type: string
+          sort_order?: number
           updated_at?: string | null
           url: string
         }
@@ -115,7 +114,7 @@ export type Database = {
           id?: string
           name?: string
           project_id?: string
-          type?: string
+          sort_order?: number
           updated_at?: string | null
           url?: string
         }
@@ -536,6 +535,32 @@ export type Database = {
     }
     Functions: {
       current_user_id: { Args: never; Returns: string }
+      insert_project_media: {
+        Args: {
+          p_alt: string
+          p_caption: string
+          p_name: string
+          p_project_id: string
+          p_url: string
+        }
+        Returns: {
+          alt: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          name: string
+          project_id: string
+          sort_order: number
+          updated_at: string | null
+          url: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "media"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       experience_type:

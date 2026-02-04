@@ -96,12 +96,12 @@ export const uploadConfig: Record<
   },
 
   /* =========================
-     PROJECT MEDIA (galería / videos / pdf)
+    PROJECT MEDIA (solo imágenes)
   ========================== */
   'project-media': {
     bucket: 'project-media',
-    maxSizeMB: 20,
-    mimeTypes: ['image/*', 'video/mp4', 'audio/mpeg', 'application/pdf'],
+    maxSizeMB: 10,
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'],
     buildPath: ({ extension, extra }) => {
       if (!extra?.projectSlug) {
         throw new Error('projectSlug es requerido para project-media')
@@ -109,9 +109,10 @@ export const uploadConfig: Record<
 
       const filename =
         extra.filename ??
-        `file-${Date.now()}.${extension}`
+        `image-${Date.now()}.${extension}`
 
       return `${extra.projectSlug}/${filename}`
     }
   }
+
 }

@@ -1,6 +1,5 @@
 // app/composables/public/views/useProjectDetailView.ts
 import type { PublicProjectDetail } from '~/types/queries'
-import type { MediaType } from '~/constants/mediaTypes'
 
 export interface ProjectDetailView {
   id: string
@@ -25,11 +24,12 @@ export interface ProjectDetailView {
   media: {
     id: string
     name: string
-    type: MediaType
     src: string
     alt: string
     caption: string | null
+    sortOrder: number | null
   }[]
+
 
   technologies: {
     id: string
@@ -50,7 +50,11 @@ export const useProjectDetailView = (
     return null
   }
 
-  const mediaList = project.media ?? []
+//ordenamos datos
+const mediaList = [...(project.media ?? [])]
+  .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+
+
 
   const coverSrc =
     project.thumbnail_url ??
@@ -88,10 +92,11 @@ export const useProjectDetailView = (
     media: mediaList.map(m => ({
       id: m.id,
       name: m.name,
-      type: m.type as MediaType,
       src: m.url,
       alt: m.alt ?? project.title ?? '',
       caption: m.caption,
+      sortOrder: m.sort_order,
     })),
+
   }
 }
