@@ -1,5 +1,6 @@
 // app/composables/useSupabase.ts (SIN CAMBIOS, solo verificación)
-import type { Database } from '~/types'
+//import type { Database } from '~/types'
+import type { Database } from '~/types/database.types'
 
 export const useSupabase = () => {
   const client = useSupabaseClient<Database>() // ✅ Este ya maneja cookies automáticamente

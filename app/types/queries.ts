@@ -58,10 +58,10 @@ export type PublicProjectDetail = PublicProjectListItem & {
 export type PublicMediaItem = {
   id: string
   name: string
-  type: string
   url: string
   alt: string | null
   caption: string | null
+  sort_order: number | null
 }
 
 
@@ -99,6 +99,7 @@ export type PublicTechnologyItem = {
   color: string | null
   website_url: string | null
   description: string | null
+  sort_order: number | null
 }
 
 // Re-exportar enums

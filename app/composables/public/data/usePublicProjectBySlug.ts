@@ -25,14 +25,16 @@ export const usePublicProjectBySlug = () => {
         media (
           id,
           name,
-          type,
           url,
           alt,
-          caption
+          caption,
+          sort_order
         )
       `)
       .eq('slug', slug)
+      .order('sort_order', { referencedTable: 'media', ascending: true })
       .single()
+
 
     if (error || !data) {
       console.error('[Project slug]', error)

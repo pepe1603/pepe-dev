@@ -1,13 +1,15 @@
 <!-- app/components/admin/projects/media_project/ProjectMediaPanel.vue -->
-<script setup lang="ts">
+<script setup lang="ts" name="ProjectMediaPanel">
 import { ref, watch } from 'vue'
-import { MEDIA_TYPES } from '~/constants/mediaTypes'
 import type { ProjectMediaItemModel } from '~/composables/admin/projects/media_project/models/ProjectMediaItemModel'
 
 import { useAdminProjectMediaQuery } from '~/composables/admin/projects/media_project/queries/useAdminProjectMediaQuery'
 import { useProjectMediaUseCases } from '~/composables/admin/projects/media_project/usecases/useProjectMediaUseCases'
 
 import ProjectMediaUpload from './ProjectMediaUpload.vue'
+import ProjectMediaSortableList from './ProjectMediaSortableList.vue'
+import ProjectMediaEditModal from './ProjectMediaEditModal.vue'
+
 import type { AccordionItem } from '@nuxt/ui'
 
 const props = defineProps<{
@@ -17,165 +19,121 @@ const props = defineProps<{
 
 const toast = useToast()
 
-/**
- * Query
- */
-const {
-  media,
-  loading,
-  error,
-  refetch,
-} = useAdminProjectMediaQuery(props.projectId)
+/* ---------------- QUERY ---------------- */
+const { media, loading, error } =
+  useAdminProjectMediaQuery(props.projectId)
 
-/**
- * UseCases
- */
+/* ---------------- USE CASES ---------------- */
 const {
   createMedia,
   updateMedia,
   deleteMedia,
 } = useProjectMediaUseCases()
 
-/**
- * Accordion items
- */
-const accordionItems = ref<AccordionItem[]>([
-  {
-    label: 'Subir nuevo media',
-    icon: 'i-lucide-upload-cloud',
-    slot: 'upload',
-  }
-])
-
-/**
- * Estado editable local
- */
+/* ---------------- LOCAL STATE ---------------- */
 const mediaItems = ref<ProjectMediaItemModel[]>([])
-
-const editingItemId = ref<string | null>(null)
-
-const isEditing = (itemId: string) => editingItemId.value === itemId
-
-const startEditing = (itemId: string) => {
-  if (editingItemId.value !== itemId) {
-    editingItemId.value = itemId
-  }
-}
-
-
-const stopEditing = () => {
-  editingItemId.value = null
-}
-
 
 watch(media, () => {
   mediaItems.value = [...media.value]
 }, { immediate: true })
 
-/**
- * Crear nuevo media desde upload
- */
-const onUploaded = async (
-  payload: {
-    url: string
-    name: string
-    type: ProjectMediaItemModel['type']
+/* ---------------- UPLOAD ---------------- */
+const accordionItems = ref<AccordionItem[]>([
+  {
+    label: 'Añadir imagen a la galería',
+    icon: 'i-lucide-upload-cloud',
+    slot: 'upload',
   }
-) => {
+])
+
+const onUploaded = async (payload: { url: string; name: string }) => {
   try {
     const newItem = await createMedia({
       projectId: props.projectId,
       url: payload.url,
       name: payload.name,
-      type: payload.type,
       alt: null,
-      caption: null
+      caption: null,
     })
 
-    mediaItems.value.push(newItem)
+    mediaItems.value = [...mediaItems.value, newItem]
 
     toast.add({
-      title: 'Media añadida',
+      icon: 'i-lucide-circle-check',
+      title: 'Listo!',
+      description: 'Imagen añadida',
       color: 'success',
     })
   } catch (e: any) {
     toast.add({
-      title: 'Error al crear media',
+      icon: 'i-lucide-circle-x',
+      title: 'Error al subir imagen',
       description: e.message,
       color: 'error',
     })
   }
+
+
 }
 
-/**
- * Guardar cambios de metadata
- */
-const saveItem = async (item: ProjectMediaItemModel) => {
+/* ---------------- EDIT MODAL ---------------- */
+const isEditModalOpen = ref(false)
+const selectedItem = ref<ProjectMediaItemModel | null>(null)
+
+const openEditModal = (item: ProjectMediaItemModel) => {
+  selectedItem.value = item
+  isEditModalOpen.value = true
+}
+
+const saveFromModal = async (item: ProjectMediaItemModel) => {
   try {
     await updateMedia(item.id, {
+      name: item.name,
       alt: item.alt,
       caption: item.caption,
-      type: item.type
     })
 
-    editingItemId.value = null
+    const index = mediaItems.value.findIndex(i => i.id === item.id)
+    if (index !== -1) {
+      mediaItems.value[index] = { ...item }
+    }
 
     toast.add({
-      title: 'Media actualizada',
+      icon: 'i-lucide-circle-check',
+      title: 'Listo!',
+      description: 'Imagen Actualziada ',
       color: 'success',
     })
   } catch (e: any) {
     toast.add({
-      title: 'Error al actualizar media',
+      icon: 'i-lucide-circle-x',
+      title: 'Error al guardar cambios',
       description: e.message,
       color: 'error',
     })
   }
 }
 
-
-/**
- * Eliminar media
- */
+/* ---------------- DELETE ---------------- */
 const removeItem = async (item: ProjectMediaItemModel) => {
   try {
     await deleteMedia(item.id)
     mediaItems.value = mediaItems.value.filter(i => i.id !== item.id)
 
-    if (editingItemId.value === item.id) {
-      editingItemId.value = null
-    }
-
     toast.add({
-      title: 'Media eliminada',
+      icon: 'i-lucide-circle-check',
+      title: 'Imagen eliminada',
       color: 'success',
     })
   } catch (e: any) {
     toast.add({
-      title: 'Error al eliminar media',
+      icon: 'i-lucide-circle-x',
+      title: 'Error al eliminar imagen',
       description: e.message,
       color: 'error',
     })
   }
 }
-
-
-
-const dropdownItems = (item: ProjectMediaItemModel) => [
-  [
-    {
-      label: 'Editar',
-      icon: 'i-lucide-pencil',
-      onSelect: () => startEditing(item.id)
-    },
-    {
-      label: 'Eliminar',
-      icon: 'i-lucide-trash',
-      onSelect: () => removeItem(item)
-    }
-  ]
-]
-
 
 </script>
 
@@ -184,187 +142,91 @@ const dropdownItems = (item: ProjectMediaItemModel) => [
     <h3 class="text-lg font-semibold">
       Media del proyecto
     </h3>
-    <UAlert 
-      color="primary" 
-      variant="soft"
-      icon="i-lucide-info"
-      class="mb-4"
-    >
-      <template #title>
-        Indicaciones para Media Project
-      </template>
-      
-      <template #description>
-        <ul class="list-disc list-inside mt-2 space-y-1 text-sm">
-          <li>Sube imágenes o gifs y videos relacionados con el proyecto.</li>
-          <li>Agrega descripciones (Alt) y captions para mejorar accesibilidad y SEO.</li>
-          <li>El orden de los elementos se puede ajustar arrastrando o modificando sortOrder.</li>
-          <li>Los cambios se guardan individualmente en cada media item.</li>
-          <span class="text-warning">Nota: No Audios</span>
-        </ul>
-      </template>
-    </UAlert>
+
+    <!-- Info -->
+<UAlert color="info" variant="soft" icon="i-lucide-images">
+  <template #title>Galería del proyecto</template>
+  <template #description>
+    <p class="text-sm">
+      Aquí gestionas las imágenes que forman parte del portfolio.
+    </p>
+    <ul class="mt-2 list-disc list-inside text-sm space-y-1">
+      <li>Sube imágenes una por una</li>
+      <li>Reordénalas arrastrando</li>
+      <li>Edita nombre, alt y descripción</li>
+    </ul>
+  </template>
+</UAlert>
 
     <!-- Upload -->
-    <!-- Accordion para Upload -->
-    <UAccordion :items="accordionItems" :unmount-on-hide="false" >
+    <UAccordion :items="accordionItems" :unmount-on-hide="false">
       <template #upload>
-        <div class="pb-4">
+        <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 space-y-4">
+          
+          <!-- Header del uploader -->
+          <div class="flex items-start gap-3">
+            <UIcon name="i-lucide-upload-cloud" class="mt-1 text-primary-500" />
+            <div>
+              <p class="font-medium text-sm">
+                Añadir imagen a la galería
+              </p>
+              <p class="text-xs text-muted">
+                La imagen se añadirá al final de la galería y podrás editarla después.
+              </p>
+            </div>
+          </div>
+
+          <!-- Uploader -->
           <ProjectMediaUpload
             :project-slug="projectSlug"
             @uploaded="onUploaded"
           />
         </div>
       </template>
+
     </UAccordion>
 
-    <!-- Loading -->
+    <!-- Loading / Error -->
     <div v-if="loading" class="text-sm text-muted">
-      Cargando media…
+      Cargando imágenes…
     </div>
 
-    <!-- Error -->
     <UAlert
       v-if="error"
       color="error"
       variant="soft"
-      icon="i-lucide-sad"
+      icon="i-lucide-alert-triangle"
       :title="error"
     />
 
-    <!-- Lista -->
-    <div
-      v-if="mediaItems.length"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-    >
-      <UCard
-        v-for="item in mediaItems"
-        :key="item.id"
-        class="group"
+      <div
+        v-if="!loading && !mediaItems.length"
+        class="rounded-xl border border-dashed border-gray-300 dark:border-gray-700
+              p-8 text-center bg-gray-50 dark:bg-gray-900"
       >
-        <!-- Preview -->
-        <div class="relative h-44 overflow-hidden rounded-md bg-muted">
-          <!-- Image & GIF -->
-          <img
-            v-if="item.type === 'image' || item.type === 'gif'"
-            :src="item.url"
-            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-
-          <!-- Video -->
-          <video
-            v-else-if="item.type === 'video'"
-            :src="item.url"
-            controls
-            class="w-full h-full object-cover"
-          />
-
-          <!-- PDF -->
-          <div
-            v-else-if="item.type === 'pdf'"
-            class="h-full flex items-center justify-center text-sm text-muted"
-          >
-            📄 PDF
-          </div>
-
-          <!-- Tipo -->
-          <UBadge
-            color="primary"
-            variant="solid"
-            size="xs"
-            class="absolute top-2 left-2 capitalize"
-          >
-            {{ item.type }}
-          </UBadge>
-        </div>
-
-        <!-- Metadata -->
-        <div 
-          v-if="isEditing(item.id)"
-          class="space-y-3 mt-4"
-        >
-          <UInput
-            v-model="item.alt"
-            size="sm"
-            class="w-full"
-            placeholder="Alt text (accesibilidad)"
-          />
-
-          <UInput
-            v-model="item.caption"
-            size="sm"
-            class="w-full"
-            placeholder="Caption / descripción"
-          />
-
-          <USelect
-            v-model="item.type"
-            :items="MEDIA_TYPES.map(t => ({ label: t, value: t }))"
-            size="sm"
-          />
-
-        </div>
+        <UIcon name="i-lucide-images" class="mx-auto mb-2 size-8 text-gray-400" />
+        <p class="text-sm font-medium">
+          Este proyecto aún no tiene imágenes
+        </p>
+        <p class="text-xs text-muted mt-1">
+          Usa “Subir nueva imagen” para empezar a construir la galería.
+        </p>
+      </div>
 
 
-        <!-- Metadata (read-only) -->
-        <div
-          v-if="!isEditing(item.id)"
-          class="mt-4 space-y-1 text-sm text-muted"
-        >
-          <p>
-            <span class="font-medium text-gray-700 dark:text-gray-300">Nombre:</span>
-            {{ item.name }}
-          </p>
+    <!-- Sortable list -->
+    <ProjectMediaSortableList
+      v-if="mediaItems.length"
+      :media="mediaItems"
+      @edit="openEditModal"
+      @delete="removeItem"
+    />
 
-          <p v-if="item.alt">
-            <span class="font-medium text-gray-700 dark:text-gray-300">Alt:</span>
-            {{ item.alt }}
-          </p>
-
-          <p v-if="item.caption">
-            <span class="font-medium text-gray-700 dark:text-gray-300">Caption:</span>
-            {{ item.caption }}
-          </p>
-
-          <p>
-            <span class="font-medium text-gray-700 dark:text-gray-300">Tipo:</span>
-            {{ item.type }}
-          </p>
-        </div>
-
-
-        <USeparator class="my-4" />
-
-        <!-- Actions -->
-        <div class="flex items-center justify-between">
-          <!-- Guardar SOLO si está editando -->
-          <UButton
-            v-if="isEditing(item.id)"
-            size="xs"
-            color="primary"
-            icon="i-lucide-save"
-            @click="saveItem(item)"
-          >
-            Guardar
-          </UButton>
-
-          <span v-else class="text-xs text-muted italic">
-            Solo lectura
-          </span>
-
-          <!-- Dropdown -->
-          <UDropdownMenu :items="dropdownItems(item)">
-            <UButton
-              size="xs"
-              variant="ghost"
-              icon="i-lucide-more-vertical"
-            />
-          </UDropdownMenu>
-
-        </div>
-
-      </UCard>
-    </div>
-
+    <!-- Edit Modal -->
+    <ProjectMediaEditModal
+      v-model="isEditModalOpen"
+      :media="selectedItem"
+      @save="saveFromModal"
+    />
   </div>
 </template>

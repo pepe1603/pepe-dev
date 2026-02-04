@@ -10,6 +10,16 @@ import MediaPdfList from './MediaPdfList.vue'
 import type { PublicMediaItem } from './publicMedia.types'
 import type { MediaType } from '~/constants/mediaTypes'
 
+/**
+ * ⚠️ IMPORTANTE
+ * Este componente asume que `media` ya viene
+ * ordenado por `sortOrder` desde el ViewModel.
+ *
+ * NO debe aplicar sort ni reorder aquí.
+ * El orden global es responsabilidad del dominio.
+ */
+
+
 const props = defineProps<{
   media: PublicMediaItem[]
 }>()
@@ -20,7 +30,7 @@ const props = defineProps<{
 const mediaByType = computed<Partial<Record<MediaType, PublicMediaItem[]>>>(() => {
   const groups: Partial<Record<MediaType, PublicMediaItem[]>> = {}
 
-  for (const item of props.media ?? []) {
+  for (const item of props.media) {
     if (!groups[item.type]) {
       groups[item.type] = []
     }
@@ -29,11 +39,14 @@ const mediaByType = computed<Partial<Record<MediaType, PublicMediaItem[]>>>(() =
 
   return groups
 })
+
+const source = computed(() => props.media)
+
 </script>
 
 
 <template>
-  <section v-if="media?.length" class="space-y-12">
+  <section v-if="source.length" class="space-y-12">
 
     <!-- IMAGES -->
     <MediaImageGallery

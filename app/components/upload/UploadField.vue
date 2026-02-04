@@ -1,3 +1,4 @@
+<!-- app/components/upload/UploadField.vue -->
 <script setup lang="ts" name="UploadField">
 import { ref, computed, onBeforeUnmount } from 'vue'
 import { useUploadService } from '~/composables/uploads/useUploadService'

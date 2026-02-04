@@ -282,26 +282,18 @@ const editForm = computed<ProjectFormModel | null>(() =>
             </p>
           </div>
 
-
             <UContainer>              
-              <ProjectForm
-                :model-value="form"
-                :loading="loading"
-                :is-create="isNew"
-                @submit="onSubmit"
-                @cancel="goBack"
-              />
+              <UCard>
+                <ProjectForm
+                  :model-value="form"
+                  :loading="loading"
+                  :is-create="isNew"
+                  @submit="onSubmit"
+                  @cancel="goBack"
+                />
+              </UCard>
 
-                  <!-- Aviso sobre el estado -->
-            <UAlert
-              v-if="!isNew"
-              color="info"
-              variant="soft"
-              icon="i-lucide-info"
-              title="Estado de la skill"
-              description="No es necesario guardar el formulario para cambiar el estado. El cambio se aplicará inmediatamente."
-              class="my-4"
-            />            
+            
               <ProjectStatusPanel
                  v-if="editForm"
                 :id="editForm.id as string"

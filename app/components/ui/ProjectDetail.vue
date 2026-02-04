@@ -1,6 +1,7 @@
 <script setup lang="ts" name="ProjectDetail">
 import type { ProjectDetailView } from '~/composables/public/views/useProjectDetailView'
 import PublicMediaRenderer from './media/PublicMediaRenderer.vue';
+import MediaImageGallery from './media/MediaImageGallery.vue';
 
 defineProps<{
   project: ProjectDetailView
@@ -97,12 +98,12 @@ defineProps<{
         </UBadge>
       </div>
     </UCard>
-
-
-    <!-- MEDIA -->
-    <PublicMediaRenderer
+    
+    <MediaImageGallery
       v-if="project.media.length"
-      :media="project.media"
+      :items="project.media"
     />
+
+
   </section>
 </template>
