@@ -24,7 +24,6 @@ export const usePublicSkills = () => {
       return []
     }
 
-    console.log('dataskill public: ', data)
     // ✅ NORMALIZACIÓN (clave)
     return data
       .filter(skill => skill.id && skill.name)
