@@ -23,6 +23,7 @@ export interface UploadExtraParams {
   userId?: string
   projectSlug?: string
   filename?: string
+  fullName?: string   // 👈 NUEVO
 }
 
 export interface UploadPathParams {

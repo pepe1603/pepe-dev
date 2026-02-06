@@ -14,9 +14,6 @@ export const useAdminDashboardQuery = () => {
       console.error('[Dashboard][Supabase error]', error)
       throw error
     }
-
-    //console.log('[Dashboard][Raw data from Supabase]', data)
-
     return data ?? []
   }
 

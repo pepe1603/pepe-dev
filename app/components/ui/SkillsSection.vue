@@ -1,70 +1,44 @@
 <script setup lang="ts" name="SkillsSection">
 import type { SkillCategoryView } from '~/composables/public/views/useSkillsView'
-import SkillBadge from './SkillBadge.vue'
+import SkillItem from './SkillItem.vue';
 
-const props = defineProps<{
+
+defineProps<{
   categories: SkillCategoryView[]
-  flat?: boolean
 }>()
 </script>
 
 <template>
-  <section class="flex flex-col gap-6 w-full items-center">
+  <section class="flex flex-col gap-10 w-full">
     <header class="text-center space-y-2">
       <h2 class="text-3xl font-bold">
         Habilidades profesionales
       </h2>
-      <p class="text-muted">
+      <p class="text-muted max-w-2xl mx-auto">
         Competencias técnicas y transversales que aplico en el desarrollo de software
       </p>
     </header>
 
-    <div class="w-full flex justify-center items-center">
-      <div class="w-full max-w-7xl">
-        <UMarquee
-          pause-on-hover
-          reverse
-          overlay
-          :repeat="8"
-          :ui="{ 
-            root: '[--gap:1rem] w-full',
-            content: 'w-auto py-4'
-          }"
-        >
+    <!-- Categorías -->
+    <div class="space-y-10 w-full max-w-6xl mx-auto">
+      <section
+        v-for="category in categories"
+        :key="category.category"
+        class="space-y-4 border-t border-muted/40 pt-6"
+      >
+        <h3 class="text-lg font-semibold text-muted-foreground">
+          {{ category.category }}
+        </h3>
 
-          <!-- Flat mode: todos los badges juntos -->
-          <div v-if="flat" class="flex flex-wrap gap-2 justify-center">
-            <SkillBadge
-              v-for="skill in categories.flatMap(c => c.skills)"
-              :key="skill.id"
-              :skill="skill"
-            />
-          </div>
-
-          <!-- Agrupado por categoría (default) -->
-          <template v-else>
-            <UPageCard
-              v-for="category in categories"
-              :key="category.category"
-              variant="soft"
-              class="space-y-4 w-fit shrink-0"
-            >
-              <h3 class="text-xl font-semibold text-center">
-                {{ category.category }}
-              </h3>
-
-              <div class="flex flex-wrap gap-2 justify-center">
-                <SkillBadge
-                  v-for="skill in category.skills"
-                  :key="skill.id"
-                  :skill="skill"
-                />
-              </div>
-            </UPageCard>
-          </template>
-
-        </UMarquee>
-      </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center">
+          <SkillItem
+            v-for="skill in category.skills"
+            :key="skill.id"
+            :skill="skill"
+            class="w-full max-w-55"
+          />
+        </div>
+      </section>
     </div>
   </section>
 </template>

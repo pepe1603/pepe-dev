@@ -25,16 +25,6 @@ const {
 
 const isDragging = ref(false)
 
-/**ver orden en coosla  */
-
-watch(items, (newItems) => {
-  console.log('📝 Orden actualizado:', newItems.map((i, idx) => `${idx + 1}. ${i.name}`))
-}, { deep: true })
-
-watch(() => props.media, (v) => {
-  console.log('media updated', v.map(i => i.name))
-}, { deep: true })
-
 
 </script>
 

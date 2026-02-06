@@ -116,7 +116,7 @@ const {
         <!-- otras secciones del about -->
 
         <SkillsSection
-          v-if="skillCategories.length"
+          v-if="!pending && skillCategories.length"
           :categories="skillCategories"
         />
 

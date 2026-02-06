@@ -32,11 +32,8 @@ export const useAdminProfileQuery = () => {
       return
     }
 
-    console.log('data perfil de supabase crudo: ', data)
-
     form.value = profileToFormMapper(data)
 
-    console.log('data  convertido a formo value por profileToFormMapper: ', form.value)
     loading.value = false
   }
 

@@ -4,6 +4,8 @@ import type {
   UploadTarget,
   UploadPathParams
 } from './upload.types'
+import { slugify } from '~/utils/slugify'
+
 
 export const uploadConfig: Record<
   UploadTarget,
@@ -37,10 +39,13 @@ export const uploadConfig: Record<
     maxSizeMB: 10,
     mimeTypes: ['application/pdf'],
     buildPath: ({ extension, extra }) => {
-      if (!extra?.userId) {
-        throw new Error('userId es requerido para cv')
+      if (!extra?.fullName) {
+        throw new Error('fullName es requerido para cv')
       }
-      return `cv-${extra.userId}.${extension}`
+
+      const slug = slugify(extra.fullName)
+
+      return `cv-${slug}.${extension}`
     }
   },
 
