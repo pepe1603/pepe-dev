@@ -27,19 +27,19 @@ const year = new Date().getFullYear()
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Header público -->
-    <UHeader class="bg-cyan-50 dark:bg-cyan-900/25 text-current border-b border-gray-200 dark:border-gray-800">
+    <UHeader class="bg-transparent border-b border-gray-200 dark:border-gray-800">
       <template #left>
-        <ULink to="/" class="flex items-center">
+        <UButton to="/" variant="link" color="neutral" class="flex items-center">
           <UIcon name="i-lucide-rocket" class="w-6 h-6" />
           <span class="text-xl font-bold ml-2">Pepe.dev</span>
-        </ULink>
+        </UButton>
       </template>
 
       <!-- Los links van en el slot default, usando UNavigationMenu -->
-      <UNavigationMenu :items="publicLinks" variant="link" />
+      <UNavigationMenu :items="publicLinks" variant="link" color="neutral" />
 
       <template #right>
-        <UColorModeButton class="rounded-full" color="primary" />
+        <UColorModeButton class="rounded-full" size="xs" color="primary" />
       </template>
 
       <!-- Para mobile, usa el slot body -->

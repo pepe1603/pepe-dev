@@ -99,6 +99,15 @@ const actionLabels: Record<StatusAction, string> = {
 
 <template>
   <div class="border border-accented rounded-lg p-5 bg-muted/30 space-y-4">
+              <!-- Aviso sobre el estado -->
+        <UAlert
+          color="info"
+          variant="soft"
+          icon="i-lucide-info"
+          title="Estado de la skill"
+          description="No es necesario guardar el formulario para cambiar el estado. El cambio se aplicará inmediatamente."
+        />
+        
     <div class="flex items-center justify-between">
       <div>
         <div class="font-medium">Status</div>

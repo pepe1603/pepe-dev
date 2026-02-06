@@ -137,15 +137,6 @@ const goBack = () => {
           @cancel="goBack"
         />
 
-        <!-- Aviso sobre el estado -->
-      <UAlert
-        color="info"
-        variant="soft"
-        icon="i-lucide-info"
-        title="Estado de la skill"
-        description="No es necesario guardar el formulario para cambiar el estado. El cambio se aplicará inmediatamente."
-      />
-
       <ExperienceStatusPanel
         v-if="!isNew"
         :id="form.id!"

@@ -54,7 +54,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-  <!-- ✅ CASO EDGE: Usuario accede directamente a URL sin sesión válida -->
+<div>
+    <!-- ✅ CASO EDGE: Usuario accede directamente a URL sin sesión válida -->
   <div v-if="!hasValidSession" class="max-w-md mx-auto">
     <UAlert 
       color="warning" 
@@ -141,6 +142,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </div>
     </template>
   </UAuthForm>
+</div>
 </template>
 
 <style scoped>
