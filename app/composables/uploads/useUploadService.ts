@@ -64,7 +64,7 @@ export function useUploadService () {
 
     if (
       config.bucket === 'avatars' ||
-      
+      config.bucket === 'documents' ||
       config.bucket === 'project-thumbnails' ||
       config.bucket === 'project-media'
       

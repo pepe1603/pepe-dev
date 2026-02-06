@@ -3,6 +3,7 @@
 import type { ProfileFormModel } from '~/composables/admin/profile/models/ProfileFormModel'
 import { useAdminProfileQuery } from '~/composables/admin/profile/queries/useAdminProfileQuery'
 import { useUpdateProfileUseCase } from '~/composables/admin/profile/usecases/useUpdateProfileUseCase'
+import { usePublicDocumentUrl } from '~/composables/uploads/usePublicDocumentUrl'
 import { useUploadService } from '~/composables/uploads/useUploadService'
 
 
@@ -70,7 +71,7 @@ watch(
   (value) => {
     if (!value) return
     originalForm.value = cloneForm(value)
-    console.log('✅ Perfil listo para editar')
+    //console.log('✅ Perfil listo para editar')
   },
   { immediate: true }
 )
@@ -116,7 +117,7 @@ const onSave = async () => {
   if (!form.value || !isValid.value) return
 
   await updateProfile(form.value)
-  toast.add({ color: 'success', description: 'Perfil actualizado' })
+  toast.add({ color: 'success',title: 'Completado', description: 'Perfil actualizado',icon: 'i-lucide-check-circle' })
   originalForm.value = cloneForm(form.value)
 }
 
@@ -141,6 +142,7 @@ const onAvatarUpload = async (file: File) => {
 
     toast.add({
       color: 'success',
+      icon: 'i-lucide-check-circle',
       description: 'Avatar actualizado'
     })
   } catch (err) {
@@ -165,7 +167,16 @@ const onCvUpload = async (file: File) => {
     uploadingCv.value = true
     selectedCvFileName.value = file.name
 
-    const result = await upload(file, 'cv')
+    if (!form.value?.fullName) {
+      toast.add({ color: 'error', description: 'El Fullname es obligatorio para subir el CV' })
+      throw new Error('El nombre es obligatorio para subir el CV')
+    }
+
+
+    const result = await upload(file, 'cv', {
+      fullName: form.value?.fullName
+    })
+
 
     if (form.value) {
       // ⬅️ GUARDAMOS SOLO EL PATH
@@ -174,6 +185,8 @@ const onCvUpload = async (file: File) => {
 
     toast.add({
       color: 'success',
+      icon: 'i-lucide-check-circle',
+      title: 'Completado',
       description: 'CV subido correctamente'
     })
   } catch (err) {
@@ -185,25 +198,16 @@ const onCvUpload = async (file: File) => {
   }
 }
 
+const cvPublicUrl = computed(() =>
+  usePublicDocumentUrl(form.value?.cvUrl ?? null)
+)
+
 //visulaizar el archivo sin problemas  de  bucket puvlico o privado atravez de url publica
-const openCvPreview = async () => {
-  if (!form.value?.cvUrl) return
-
-  const { data, error } = await useSupabaseClient()
-    .storage
-    .from('documents')
-    .createSignedUrl(form.value.cvUrl, 60)
-
-  if (error || !data?.signedUrl) {
-    toast.add({
-      color: 'error',
-      description: 'No se pudo abrir el CV'
-    })
-    return
-  }
-
-  window.open(data.signedUrl, '_blank')
+const openCvPreview = () => {
+  if (!cvPublicUrl.value) return
+  window.open(cvPublicUrl.value, '_blank')
 }
+
 
 
 
@@ -230,6 +234,8 @@ const validateAndApplyAvatarUrl = async () => {
 
     toast.add({
       color: 'success',
+      title: 'Completado',
+      icon: 'i-lucide-check-circle',
       description: 'Avatar actualizado por URL'
     })
   } catch {
@@ -241,10 +247,13 @@ const validateAndApplyAvatarUrl = async () => {
 }
 
 //usar cuando solo se quiere mostar el nombre y no toda la ruta. 
-const cvFileLabel = computed(() =>
-  form.value?.cvUrl?.replace(/^cv-/, '') ?? ''
-)
-
+const cvFileName = computed(() => {
+  if (!form.value?.cvUrl) return ''
+  return form.value.cvUrl
+    .replace(/^cv-/, '')
+    .replace('.pdf', '')
+    .replace(/-/g, ' ')
+})
 
 
 </script>
@@ -254,8 +263,7 @@ const cvFileLabel = computed(() =>
   <NuxtLayout 
   name="admin"
   title="Mi perfil"
-  description="Edita tu información personal, profesional y los datos visibles en tu sitio público.
-"
+  description="Edita tu información personal, profesional y los datos visibles en tu sitio público."
   >
       <!-- ===============================
           SKELETON
@@ -621,7 +629,14 @@ const cvFileLabel = computed(() =>
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-gray-900 dark:text-white">CV preview</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ form.cvUrl }}</p>
+                  <p class="text-xs text-gray-500 truncate mt-0.5">
+                    CV — {{ cvFileName }}
+                  </p>
+                  <!-- <a :href="cvPublicUrl" target="_blank" rel="noopener" class="ml-2">
+                    Descargar CV
+                  </a> -->
+
+
                 </div>
                 <UButton
                   color="neutral"

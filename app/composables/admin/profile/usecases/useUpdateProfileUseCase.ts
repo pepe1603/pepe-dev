@@ -22,7 +22,7 @@ export const useUpdateProfileUseCase = () => {
 
     const payload = formToProfileUpdateMapper(form)
 
-    console.log(' data update (useUpdateProfileUseCase) : ', payload)
+    // console.log(' data update (useUpdateProfileUseCase) : ', payload)
 
     const { error: dbError } = await supabase
       .from('profiles')

@@ -1,8 +1,9 @@
 <!-- //app/components/ui/ProfileHero.vue -->
 <script setup lang="ts" name="ProfileHero">
 import type { ProfileLinkView } from '~/composables/public/views/useProfileView';
+import { usePublicDocumentUrl } from '~/composables/uploads/usePublicDocumentUrl'
 
-defineProps<{
+const props = defineProps<{
   name: string
   headline: string
   bio?: string
@@ -11,8 +12,11 @@ defineProps<{
   email?: string
   cvUrl?: string | null
   links?: ProfileLinkView[]
-  fields?: string[] // campos a renderizar: ['bio','location','email','cv']
+  fields?: string[]// campos a renderizar: ['bio','location','email','cv']
 }>()
+
+const cvPublicUrl = computed(() => usePublicDocumentUrl(props.cvUrl ?? null))
+
 </script>
 
 <template>
@@ -58,15 +62,16 @@ defineProps<{
         color="primary"
         :icon="link.icon"
       />
-      <UButton
-        v-if="cvUrl && fields?.includes('cv')"
-        :to="cvUrl"
-        target="_blank"
-        variant="outline"
-        color="primary"
-      >
-        Descarga mi CV
-      </UButton>
+
+      <a
+          v-if="cvPublicUrl && cvUrl && fields?.includes('cv')"
+          :href="cvPublicUrl"
+          target="_blank"
+          rel="noopener"
+        >
+          <UButton variant="outline" color="primary">Descarga mi CV</UButton>
+        </a>      
+
     </div>
   </section>
 </template>
