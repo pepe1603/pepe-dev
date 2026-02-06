@@ -56,9 +56,9 @@ const year = new Date().getFullYear()
     <!-- Footer -->
     <UFooter class="flex justify-center items-center py-2 border-t border-neutral-200 dark:border-neutral-800 mt-auto">
       <template #left>
-        <p class="text-sm text-muted">© {{ year }} Pepe.dev</p>
+        <p class="text-sm text-muted">{{ year }}</p>
         <!-- <UButton variant="ghost" color="secondary" label="Authenticacion" :to="{name: 'auth-home'}" /> -->
-         <span class="hidden sm:inline text-xs text-neutral-500 ml-2">⌘+K para acceder al admin</span>
+         <span class="hidden sm:inline text-xs text-neutral-500 ml-2">⌘+K para acceder al CPanel</span>
       </template>
     </UFooter>
   </div>
