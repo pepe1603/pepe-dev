@@ -26,13 +26,11 @@ export const useSortableProjectMedia = (
   const startSorting = () => {
     snapshot.value = items.value.map(i => ({ ...i }))
     isSorting.value = true
-    console.log('🟢 Sorting mode ENABLED') // ⬅️ DEBUG
   }
 
   const cancelSorting = () => {
     items.value = snapshot.value.map(i => ({ ...i }))
     isSorting.value = false
-    console.log('🔴 Sorting mode CANCELLED') // ⬅️ DEBUG
   }
 
   const saveSorting = async () => {

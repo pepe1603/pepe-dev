@@ -27,9 +27,6 @@ export const useAdminSkillsQuery = () => {
       return
     }
 
-    //console.log('fetchSkills result:', data)
-
-
     skills.value = data ?? []
     loading.value = false
   }

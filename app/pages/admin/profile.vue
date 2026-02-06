@@ -71,7 +71,6 @@ watch(
   (value) => {
     if (!value) return
     originalForm.value = cloneForm(value)
-    //console.log('✅ Perfil listo para editar')
   },
   { immediate: true }
 )

@@ -27,8 +27,6 @@ export const useAdminTechnologiesQuery = () => {
       return
     }
 
-    //console.log('data technologies: ', data)
-
     technologies.value = data ?? []
     loading.value = false
   }

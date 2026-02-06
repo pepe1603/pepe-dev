@@ -44,8 +44,6 @@ export const useAdminProjectMediaQuery = (projectId: string) => {
       return
     }
 
-    console.log('useAdminProjectMEdiaQuery-> projects->media: ', data);
-
     media.value = (data as Media[]).map(
       (row): ProjectMediaItemModel => ({
         id: row.id,

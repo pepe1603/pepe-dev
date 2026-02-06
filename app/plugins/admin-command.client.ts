@@ -20,7 +20,6 @@ export default defineNuxtPlugin(() => {
             color: 'success',
             duration: 5000,
             close: true,
-            //onClose: () => console.log('Toast cerrado'),
           })
         } else {
           // Usuario autenticado pero NO admin → acceso restringido
