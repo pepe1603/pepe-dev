@@ -13,19 +13,6 @@ definePageMeta({
 const toast = useToast()
 const { login, loading } = useAuthLoginUseCase()
 
-// app/pages/auth/login.vue
-const user = useSupabaseUser()
-const router = useRouter()
-
-watch(
-  user,
-  (u) => {
-    if (u) {
-      router.replace('/admin')
-    }
-  }
-)
-
 
 // Schema de validación con Zod
 const schema = z.object({
@@ -80,6 +67,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       icon: 'i-lucide-shield-check',
       color: 'success',
     })
+
+    await navigateTo('/admin', { replace: true })
   }
   
 }

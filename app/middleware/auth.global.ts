@@ -14,6 +14,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
   // ✅ Rutas de auth públicas (permitidas aunque esté autenticado)
   const publicAuthRoutes = [
+    '/auth/login',
     '/auth/confirm',
     '/auth/reset-password',
     '/auth/forgot-password',

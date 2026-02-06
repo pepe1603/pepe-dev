@@ -1,7 +1,6 @@
 // app/composables/auth/usecases/useAuthLogoutUseCase.ts
 export const useAuthLogoutUseCase = () => {
   const supabase = useSupabaseClient()
-  const router = useRouter()
   const toast = useToast()
 
   const loadingLogout = ref(false)
@@ -28,7 +27,8 @@ export const useAuthLogoutUseCase = () => {
         color: 'success',
       })
 
-      await router.push({ name: 'auth-login' })
+      await navigateTo('/auth/login', { replace: true })
+
     } catch (error) {
       console.error('Error en logout:', error)
       toast.add({
